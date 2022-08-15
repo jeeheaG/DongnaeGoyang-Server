@@ -1,0 +1,46 @@
+#추가
+application.yml
+*.yml
+
+
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+#이전 프젝에서 gitignore해놨던 파일들 고대로 일단 가져옴
+#**/main/java/com/example/dongnaegoyangserver2022/config/jwt/JwtProperties.java
+#**/main/java/com/example/dongnaegoyangserver2022/config/andOauth/SecurityProperties.java
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/

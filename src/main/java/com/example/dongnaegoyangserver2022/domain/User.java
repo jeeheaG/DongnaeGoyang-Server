@@ -9,6 +9,7 @@ import javax.persistence.*;
 
 @Getter
 //@Setter
+//@DynamicUpdate
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,5 +20,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userIdx;
 
+    @Column(length = 100, nullable = false)
+    private String nickname;
+
+    private String sido;
+
+    private String gugun;
+
+    @Column(length = 100, nullable = false)
+    private String login_type;
 
 }

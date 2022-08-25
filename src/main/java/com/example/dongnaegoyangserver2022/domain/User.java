@@ -21,6 +21,12 @@ public class User {
     private Long userIdx;
 
     @Column(length = 100, nullable = false)
+    private String email;
+
+    @Column(length = 100, nullable = false)
+    private String password;
+
+    @Column(length = 100, nullable = false)
     private String nickname;
 
     private String sido;

@@ -13,21 +13,17 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "user")
+@Table(name = "image")
 @Entity
-public class User {
+public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userIdx;
+    private Long imageIdx;
 
-    @Column(length = 100, nullable = false)
-    private String nickname;
+    @Column(nullable = false)
+    private String url;
 
-    private String sido;
-
-    private String gugun;
-
-    @Column(length = 100, nullable = false)
-    private String login_type;
-
+    @JoinColumn(name = "cat_idx", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Cat cat;
 }

@@ -65,7 +65,7 @@ public class Cat {
     private Boolean isPhoto;
 
     @Column(nullable = false)
-    private LocalDate update;
+    private LocalDate lastUpdate;
 
     @JoinColumn(name = "user_idx", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)

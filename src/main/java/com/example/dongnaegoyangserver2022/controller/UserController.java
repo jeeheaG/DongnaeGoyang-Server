@@ -1,2 +1,11 @@
-package com.example.dongnaegoyangserver2022.controller;public class UserController {
+package com.example.dongnaegoyangserver2022.controller;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequiredArgsConstructor
+public class UserController {
+
+
 }

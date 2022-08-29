@@ -21,9 +21,10 @@ public class MemberController {
     @PostMapping("/api/members/login")
     public ResponseEntity<Object> login(
             HttpServletRequest httpServletRequest ) { //@RequestHeader("AUTH") String header 로 바로 가져올 수도 있음
-        String kakaoToken = httpServletRequest.getHeader("AUTH");
+//        String kakaoToken = httpServletRequest.getHeader("AUTH");
 //        System.out.println("token : "+ kakaoToken);
-        return ResponseEntity.ok(new JsonResponse(200, "login called", kakaoToken));
+        Long memberId = memberService.login(httpServletRequest);
+        return ResponseEntity.ok(new JsonResponse(200, "login called", memberId));
     }
 
     @PostMapping("/api/members/signUp")

@@ -13,5 +13,9 @@ public class MemberRequest {
         private String si;
         private String gu;
         private String dong;
+
+//TODO : 추후 수정 필요
+//        private String sido;
+//        private String gugun;
     }
 }

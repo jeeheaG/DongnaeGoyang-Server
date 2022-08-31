@@ -60,10 +60,10 @@ public class JwtTokenProvider {
 
     //요청 Header에서 토큰 가져옴
     public String resolveToken(HttpServletRequest httpServletRequest) {
-        return httpServletRequest.getHeader("AUTH"); //TODO : X-AUTH-TOKEN 으로 바꾸기
+        return httpServletRequest.getHeader("X-AUTH-TOKEN");
     }
 
-    //토큰의 비암호화와 만료일자로 유효 여부 확인
+    //토큰의 비암호화와 만료일자로 유효 여부 확인 - true/false
     public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);

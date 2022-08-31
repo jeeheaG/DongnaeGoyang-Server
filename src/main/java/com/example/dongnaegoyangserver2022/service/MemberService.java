@@ -26,7 +26,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class MemberService {
+public class MemberService { // TODO : kakaoId 형변환 없이 전달 흐름 수정해보기, UserPK네이밍 바꾸기??
 //    private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -43,7 +43,7 @@ public class MemberService {
     }
 
     public String login(HttpServletRequest httpServletRequest){
-        String kakaoToken = httpServletRequest.getHeader("AUTH");
+        String kakaoToken = httpServletRequest.getHeader("Authorization");
         Long kakaoId = (Long) getKakaoInfo(kakaoToken, "login").get("id");
 
         System.out.println("kakaoId : "+kakaoId);
@@ -77,7 +77,7 @@ public class MemberService {
     }
 
     public Long addMember(HttpServletRequest httpServletRequest, MemberRequest.signUpRequest request){
-        String kakaoToken = httpServletRequest.getHeader("AUTH");
+        String kakaoToken = httpServletRequest.getHeader("Authorization");
         HashMap<String, Object> resultMap = getKakaoInfo(kakaoToken, "signUp");
 
         Long kakaoId = (Long) resultMap.get("id");
@@ -176,13 +176,13 @@ public class MemberService {
                     resultMap.put("email", email);
                 }
 
-                System.out.println("nicknameAgree : "+nicknameAgree);
-                System.out.println("nickname : "+nickname);
-                System.out.println("emailAgree : "+emailAgree);
-                System.out.println("email : "+email);
+//                System.out.println("nicknameAgree : "+nicknameAgree);
+//                System.out.println("nickname : "+nickname);
+//                System.out.println("emailAgree : "+emailAgree);
+//                System.out.println("email : "+email);
             }
 
-            System.out.println("id : "+id);
+//            System.out.println("id : "+id);
             buf.close();
 
         } catch (IOException e) { //URL 에서 던지는 에러핸들링

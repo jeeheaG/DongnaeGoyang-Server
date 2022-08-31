@@ -4,6 +4,7 @@ import com.example.dongnaegoyangserver2022.config.jwt.JwtTokenProvider;
 import com.example.dongnaegoyangserver2022.domain.Member;
 import com.example.dongnaegoyangserver2022.dto.JsonResponse;
 import com.example.dongnaegoyangserver2022.dto.MemberRequest;
+import com.example.dongnaegoyangserver2022.dto.MemberResponse;
 import com.example.dongnaegoyangserver2022.repository.MemberRepository;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -42,22 +43,31 @@ public class MemberService { // TODO : kakaoId 형변환 없이 전달 흐름 �
         return "kakaoId : "+kakaoId+" / auth : "+auth+" / valid : "+valid;
     }
 
-    public String login(HttpServletRequest httpServletRequest){
+    public MemberResponse.loginResponse login(HttpServletRequest httpServletRequest, MemberRequest.loginRequest request){
+        if(!request.getLoginType().equals("kakao")){
+            System.out.println("loginType : "+ request.getLoginType());
+            throw new RuntimeException("Login type error.");
+        }
+
         String kakaoToken = httpServletRequest.getHeader("Authorization");
+        if(kakaoToken == null){
+            System.out.println("kakaoToken : "+kakaoToken);
+            throw new RuntimeException("KakaoToken is null. Need \"Authorization\" header.");
+        }
         Long kakaoId = (Long) getKakaoInfo(kakaoToken, "login").get("id");
 
         System.out.println("kakaoId : "+kakaoId);
 
         //TODO : DB확인하고 거절 or 토큰발급
-        Optional<Member> member = memberRepository.findByKakaoId(kakaoId);
-        if(member.isEmpty()){
+        Optional<Member> memberOptional = memberRepository.findByKakaoId(kakaoId);
+        if(memberOptional.isEmpty()){
             System.out.println("No member, kakao id : "+ kakaoId);
             throw new RuntimeException("Member connected this kakao id is not exist. Please sign up.");  //TODO : 핸들링해서 응답에도 전달해주기
         }
 
-        System.out.println("member : "+member);
-        System.out.println("member.get : "+member.get());
-        System.out.println("member.get.getRoles : "+member.get().getRoles());
+        System.out.println("member : "+memberOptional);
+        System.out.println("member.get : "+memberOptional.get());
+        System.out.println("member.get.getRoles : "+memberOptional.get().getRoles());
 
 //        Optional<Member> member = memberRepository.findByKakaoId(kakaoId)
 //                .orElseThrow(() -> new RuntimeException("Member connected this kakao id is not exist. Please sign up.")); //TODO : 핸들링해서 응답에도 전달해주기);
@@ -66,14 +76,18 @@ public class MemberService { // TODO : kakaoId 형변환 없이 전달 흐름 �
 //            throw new RuntimeException("Member connected this kakao id is not exist. Please sign up.");  //TODO : 핸들링해서 응답에도 전달해주기
 //        }
 
+        Member member = memberOptional.get();
+        String token = jwtTokenProvider.createToken(kakaoId.toString(), member.getRoles()); //사용자 식별용 고유값인 kakaoId와 권한단계인 role을 담은 토큰 생성
+//        System.out.println("token : "+token);
 
+        MemberResponse.loginResponse loginResponse = new MemberResponse.loginResponse(
+                token,
+                member.getNickname(),
+                member.getSido(),
+                member.getGugun()
+        );
 
-
-//        Long memberIdx = 1L; //TODO
-//        return memberIdx; //이거 말고 토큰 만들어서 주기!!
-        String token = jwtTokenProvider.createToken(kakaoId.toString(), member.get().getRoles());
-        System.out.println("token : "+token);
-        return token; //사용자 식별용 고유값인 kakaoId와 권한단계인 role을 담은 토큰 생성해서 줌!
+        return loginResponse;
     }
 
     public Long addMember(HttpServletRequest httpServletRequest, MemberRequest.signUpRequest request){

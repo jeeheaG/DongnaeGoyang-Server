@@ -6,6 +6,14 @@ import lombok.NoArgsConstructor;
 
 public class MemberRequest {
 
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    public static class loginRequest{
+        private String loginType;
+    }
+
     @NoArgsConstructor
     @AllArgsConstructor
     @Data

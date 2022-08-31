@@ -2,6 +2,7 @@ package com.example.dongnaegoyangserver2022.controller;
 
 import com.example.dongnaegoyangserver2022.dto.JsonResponse;
 import com.example.dongnaegoyangserver2022.dto.MemberRequest;
+import com.example.dongnaegoyangserver2022.dto.MemberResponse;
 import com.example.dongnaegoyangserver2022.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -22,20 +23,16 @@ public class MemberController {
     }
 
     @PostMapping("/api/members/login")
-    public ResponseEntity<Object> login( HttpServletRequest httpServletRequest ) { //@RequestHeader("AUTH") String header 로 바로 가져올 수도 있음
-//        String kakaoToken = httpServletRequest.getHeader("AUTH");
-//        System.out.println("token : "+ kakaoToken);
-//        Long memberId = memberService.login(httpServletRequest);
-
-        String token = memberService.login(httpServletRequest);
-        return ResponseEntity.ok(new JsonResponse(200, "login called", token));
+    public ResponseEntity<Object> login(@RequestBody MemberRequest.loginRequest request,
+                                        HttpServletRequest httpServletRequest) { //@RequestHeader("AUTH") String header 로 바로 가져올 수도 있음
+        MemberResponse.loginResponse loginResponse = memberService.login(httpServletRequest, request);
+        return ResponseEntity.ok(new JsonResponse(200, "Success login", loginResponse));
     }
 
     @PostMapping("/api/members/signUp")
-    public ResponseEntity<Object> addMember(
-            @RequestBody MemberRequest.signUpRequest request,
-            HttpServletRequest httpServletRequest ) {
+    public ResponseEntity<Object> addMember(@RequestBody MemberRequest.signUpRequest request,
+                                            HttpServletRequest httpServletRequest ) {
         Long memberIdx = memberService.addMember(httpServletRequest, request);
-        return ResponseEntity.ok(new JsonResponse(200, "signUp called", memberIdx));
+        return ResponseEntity.ok(new JsonResponse(201, "Success sign up", memberIdx));
     }
 }

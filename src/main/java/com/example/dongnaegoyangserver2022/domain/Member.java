@@ -4,8 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 //@Setter
@@ -15,7 +22,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Table(name = "member")
 @Entity
-public class Member { //NotNull인 게 하나도 없음.. 일단 kakaoId를 NotNull로 하는데 개선 필요
+public class Member implements UserDetails { //NotNull인 게 하나도 없음.. 일단 kakaoId를 NotNull unique로 하는데 개선 필요
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberIdx;
@@ -36,6 +43,47 @@ public class Member { //NotNull인 게 하나도 없음.. 일단 kakaoId를 NotN
     @Column(length = 100, nullable = false)
     private String login_type;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private Long kakaoId; //카카오 회원번호(고유값)
+
+
+
+    ////////////////////////////// implements UserDetails //////////////////////////////
+
+    //TODO : ??? roles가 그래서 어디서 오는 거임??
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Builder.Default
+    private List<String> roles = new ArrayList<>();
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public String getUsername() {
+        return kakaoId.toString();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
 }

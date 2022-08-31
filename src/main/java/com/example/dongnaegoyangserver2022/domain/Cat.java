@@ -1,7 +1,6 @@
 package com.example.dongnaegoyangserver2022.domain;
 
 import lombok.*;
-import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -67,7 +66,7 @@ public class Cat {
     @Column(nullable = false)
     private LocalDate lastUpdate;
 
-    @JoinColumn(name = "user_idx", nullable = false)
+    @JoinColumn(name = "member_idx", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    private Member member;
 }

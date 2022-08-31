@@ -31,8 +31,8 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     private Cat cat;
 
-    @JoinColumn(name = "user_idx", nullable = false)
+    @JoinColumn(name = "member_idx", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    private Member member;
 
 }

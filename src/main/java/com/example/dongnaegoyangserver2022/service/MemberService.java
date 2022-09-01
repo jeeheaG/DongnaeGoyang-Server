@@ -1,5 +1,6 @@
 package com.example.dongnaegoyangserver2022.service;
 
+import com.example.dongnaegoyangserver2022.config.exception.CustomException;
 import com.example.dongnaegoyangserver2022.config.jwt.JwtTokenProvider;
 import com.example.dongnaegoyangserver2022.domain.Member;
 import com.example.dongnaegoyangserver2022.dto.JsonResponse;
@@ -10,6 +11,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -46,13 +48,13 @@ public class MemberService { // TODO : kakaoId 형변환 없이 전달 흐름 �
     public MemberResponse.loginResponse login(HttpServletRequest httpServletRequest, MemberRequest.loginRequest request){
         if(!request.getLoginType().equals("kakao")){
             System.out.println("loginType : "+ request.getLoginType());
-            throw new RuntimeException("Login type error.");
+            throw new CustomException(HttpStatus.CONFLICT, "Login type error.");
         }
 
         String kakaoToken = httpServletRequest.getHeader("Authorization");
         if(kakaoToken == null){
             System.out.println("kakaoToken : "+kakaoToken);
-            throw new RuntimeException("KakaoToken is null. Need \"Authorization\" header.");
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "KakaoToken is null. Need \"Authorization\" header.");
         }
         Long kakaoId = (Long) getKakaoInfo(kakaoToken, "login").get("id");
 
@@ -62,7 +64,7 @@ public class MemberService { // TODO : kakaoId 형변환 없이 전달 흐름 �
         Optional<Member> memberOptional = memberRepository.findByKakaoId(kakaoId);
         if(memberOptional.isEmpty()){
             System.out.println("No member, kakao id : "+ kakaoId);
-            throw new RuntimeException("Member connected this kakao id is not exist. Please sign up.");  //TODO : 핸들링해서 응답에도 전달해주기
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "Member connected this kakao id is not exist. Please sign up.");  //TODO : 핸들링해서 응답에도 전달해주기
         }
 
         System.out.println("member : "+memberOptional);
@@ -98,7 +100,7 @@ public class MemberService { // TODO : kakaoId 형변환 없이 전달 흐름 �
 
         Optional<Member> findMember = memberRepository.findByKakaoId(kakaoId);
         if(!findMember.isEmpty()){
-            throw new RuntimeException("Already exist member by this kakao id.");  //TODO : 핸들링해서 응답에도 전달해주기
+            throw new CustomException(HttpStatus.CONFLICT, "Already exist member by this kakao id.");  //TODO : 핸들링해서 응답에도 전달해주기
         }
 //        Optional<Member> findMember = memberRepository.findByKakaoId(kakaoId)
 //                .orElseThrow(() -> new RuntimeException("Member connected this kakao id is not exist. Please sign up."));  //TODO : 핸들링해서 응답에도 전달해주기);
@@ -153,7 +155,7 @@ public class MemberService { // TODO : kakaoId 형변환 없이 전달 흐름 �
             int responseCode = conn.getResponseCode();
             System.out.println("responseCode : " + responseCode);
             if(responseCode == 401){
-                throw new RuntimeException("401 Unauthorized : kakaoToken is invalid");
+                throw new CustomException(HttpStatus.UNAUTHORIZED, "Kakao token is invalid");
             }
 
             //응답 결과 json 받아오기

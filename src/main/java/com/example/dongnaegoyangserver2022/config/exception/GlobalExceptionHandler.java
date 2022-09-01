@@ -41,6 +41,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(errorCode, e.getMessage());
     }
 
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<Object> handleCustomException(CustomException e){
+        return handleExceptionInternal(e.getHttpStatus(), e.getMessage());
+    }
 
 
     public ResponseEntity<Object> handleExceptionInternal(ErrorCode errorCode){
@@ -58,13 +62,26 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     //이미 스프링에서 정의된 에러라서 message를 따로 보내줄 때
     public ResponseEntity<Object> handleExceptionInternal(ErrorCode errorCode, String message){
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .status(errorCode.getHttpStatus().value()) //httpStatusCode 가져옴
+                .status(errorCode.getHttpStatus().value())
                 .errorCode(errorCode.name())
                 .message(message)
                 .build();
 
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
+                .body(errorResponse);
+    }
+
+    //CustomException 용
+    public ResponseEntity<Object> handleExceptionInternal(HttpStatus httpStatus, String message){
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(httpStatus.value())
+                .errorCode(httpStatus.getReasonPhrase()) //코드 빼고 설명만 가져옴
+                .message(message)
+                .build();
+
+        return ResponseEntity
+                .status(httpStatus)
                 .body(errorResponse);
     }
 

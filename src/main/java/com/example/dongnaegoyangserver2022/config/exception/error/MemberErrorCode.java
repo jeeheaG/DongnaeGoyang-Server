@@ -7,7 +7,9 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum MemberErrorCode implements ErrorCode {
-    INACTIVE_MEMBER(HttpStatus.FORBIDDEN, "Member is inactive"), //403
+
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "Need authorization"), //401
+    MEMBER_FORBIDDEN(HttpStatus.FORBIDDEN, "Member is forbidden"), //403
     ;
 
     private final HttpStatus httpStatus;

@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class TestController {
 
-    @GetMapping("/v1/test/error/rest/1")
-    public ResponseEntity<Object> restApiException1(){
-        throw new RestApiException(CommonErrorCode.INVALID_PARAMETER);
-    }
+//    @GetMapping("/v1/test/error/rest/1")
+//    public ResponseEntity<Object> restApiException1(){
+//        throw new RestApiException(CommonErrorCode.INVALID_PARAMETER);
+//    }
 
     @GetMapping("/v1/test/error/rest/2")
     public ResponseEntity<Object> restApiException2(){
@@ -27,10 +27,10 @@ public class TestController {
         throw new RestApiException(CommonErrorCode.INTERNAL_SERVER_ERROR);
     }
 
-    @GetMapping("/v1/test/error/rest/4")
-    public ResponseEntity<Object> restApiException4(){
-        throw new RestApiException(MemberErrorCode.INACTIVE_MEMBER);
-    }
+//    @GetMapping("/v1/test/error/rest/4")
+//    public ResponseEntity<Object> restApiException4(){
+//        throw new RestApiException(MemberErrorCode.INACTIVE_MEMBER);
+//    }
 
     @GetMapping("/v1/test/error/illegal")
     public ResponseEntity<Object> illegalException(){

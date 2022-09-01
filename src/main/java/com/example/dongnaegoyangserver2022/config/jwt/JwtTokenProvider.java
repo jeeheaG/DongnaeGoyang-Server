@@ -1,5 +1,7 @@
 package com.example.dongnaegoyangserver2022.config.jwt;
 
+import com.example.dongnaegoyangserver2022.config.exception.RestApiException;
+import com.example.dongnaegoyangserver2022.config.exception.error.MemberErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -49,7 +51,14 @@ public class JwtTokenProvider {
 
     //토큰에서 회원 정보 추출
     public String getUserPK(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject(); //setSubject했던 값 가져오기
+        String userPK = "";
+        try {
+            userPK = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject(); //setSubject했던 값 가져오기
+        } catch (Exception e) {
+            System.out.println("INVALID_TOKEN");
+            throw new RestApiException(MemberErrorCode.INVALID_TOKEN); //토큰에서 회원 정보를 확인할 수 없을 때 throw
+        }
+        return userPK;
     }
 
     //토큰에서 인증정보 조회

@@ -16,11 +16,13 @@ import javax.servlet.http.HttpServletRequest;
 public class MemberController {
     private final MemberService memberService;
 
+    //test
     @GetMapping("/v1/members/tokenInfo")
     public ResponseEntity<Object> checkTokenInfo(HttpServletRequest httpServletRequest) {
         String info = memberService.checkTokenInfo(httpServletRequest);
         return ResponseEntity.ok(new JsonResponse(200, "checkTokenInfo called", info));
     }
+
 
     @PostMapping("/v1/members/login")
     public ResponseEntity<Object> login(@RequestBody MemberRequest.loginRequest request,

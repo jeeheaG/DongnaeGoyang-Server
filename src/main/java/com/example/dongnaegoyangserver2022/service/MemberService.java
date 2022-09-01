@@ -1,6 +1,8 @@
 package com.example.dongnaegoyangserver2022.service;
 
 import com.example.dongnaegoyangserver2022.config.exception.CustomException;
+import com.example.dongnaegoyangserver2022.config.exception.RestApiException;
+import com.example.dongnaegoyangserver2022.config.exception.error.MemberErrorCode;
 import com.example.dongnaegoyangserver2022.config.jwt.JwtTokenProvider;
 import com.example.dongnaegoyangserver2022.domain.Member;
 import com.example.dongnaegoyangserver2022.dto.JsonResponse;
@@ -60,22 +62,22 @@ public class MemberService { // TODO : kakaoId 형변환 없이 전달 흐름 �
 
         System.out.println("kakaoId : "+kakaoId);
 
-        //TODO : DB확인하고 거절 or 토큰발급
+        // DB확인하고 거절 or 토큰발급
         Optional<Member> memberOptional = memberRepository.findByKakaoId(kakaoId);
         if(memberOptional.isEmpty()){
             System.out.println("No member, kakao id : "+ kakaoId);
-            throw new CustomException(HttpStatus.UNAUTHORIZED, "Member connected this kakao id is not exist. Please sign up.");  //TODO : 핸들링해서 응답에도 전달해주기
+            throw new RestApiException(MemberErrorCode.NOT_EXIST_KAKAO_MEMBER);
         }
 
-        System.out.println("member : "+memberOptional);
-        System.out.println("member.get : "+memberOptional.get());
-        System.out.println("member.get.getRoles : "+memberOptional.get().getRoles());
+//        System.out.println("member : "+memberOptional);
+//        System.out.println("member.get : "+memberOptional.get());
+//        System.out.println("member.get.getRoles : "+memberOptional.get().getRoles());
 
 //        Optional<Member> member = memberRepository.findByKakaoId(kakaoId)
-//                .orElseThrow(() -> new RuntimeException("Member connected this kakao id is not exist. Please sign up.")); //TODO : 핸들링해서 응답에도 전달해주기);
+//                .orElseThrow(() -> new RuntimeException("Member connected this kakao id is not exist. Please sign up."));
 //        if(member == null){
 //            System.out.println("No member, kakao id : "+ kakaoId);
-//            throw new RuntimeException("Member connected this kakao id is not exist. Please sign up.");  //TODO : 핸들링해서 응답에도 전달해주기
+//            throw new RuntimeException("Member connected this kakao id is not exist. Please sign up.");
 //        }
 
         Member member = memberOptional.get();
@@ -100,12 +102,12 @@ public class MemberService { // TODO : kakaoId 형변환 없이 전달 흐름 �
 
         Optional<Member> findMember = memberRepository.findByKakaoId(kakaoId);
         if(!findMember.isEmpty()){
-            throw new CustomException(HttpStatus.CONFLICT, "Already exist member by this kakao id.");  //TODO : 핸들링해서 응답에도 전달해주기
+            throw new CustomException(HttpStatus.CONFLICT, "Already exist member by this kakao id.");
         }
 //        Optional<Member> findMember = memberRepository.findByKakaoId(kakaoId)
-//                .orElseThrow(() -> new RuntimeException("Member connected this kakao id is not exist. Please sign up."));  //TODO : 핸들링해서 응답에도 전달해주기);
+//                .orElseThrow(() -> new RuntimeException("Member connected this kakao id is not exist. Please sign up."));
 //        if(findMember != null){
-//            throw new RuntimeException("Already exist member by this kakao id."); //TODO : 핸들링해서 응답에도 전달해주기
+//            throw new RuntimeException("Already exist member by this kakao id.");
 //        }
 
         String nickname = resultMap.get("nickname").toString();
@@ -131,10 +133,24 @@ public class MemberService { // TODO : kakaoId 형변환 없이 전달 흐름 �
                 .sido(si)
                 .gugun(gu+" "+dong) //TODO : 추후 수정 필요
                 .login_type("kakao")
-                .roles(Collections.singletonList("ROLE_USER")) //회원가입 시 role을 USER로 설정 //TODO : ?흠
+                .roles(Collections.singletonList("ROLE_USER")) //회원가입 시 role을 USER로 설정 //TODO : ?흠 이게 어디에 저장되지...
                 .build();
 
         return memberRepository.save(newMember).getMemberIdx(); //save 하고 바로 Idx값 구하기
+    }
+
+    public String refreshToken(HttpServletRequest httpServletRequest){
+        String oldToken = jwtTokenProvider.resolveToken(httpServletRequest);
+        Long kakaoId = Long.parseLong(jwtTokenProvider.getUserPK(oldToken));
+
+        Optional<Member> memberOptional = memberRepository.findByKakaoId(kakaoId);
+        if(memberOptional.isEmpty()){
+            System.out.println("No member, kakao id : "+ kakaoId);
+            throw new RestApiException(MemberErrorCode.NOT_EXIST_KAKAO_MEMBER);
+        }
+
+        return jwtTokenProvider.createToken(kakaoId.toString(), memberOptional.get().getRoles());
+
     }
 
 

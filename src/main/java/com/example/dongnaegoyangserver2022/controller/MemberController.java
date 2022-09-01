@@ -37,4 +37,10 @@ public class MemberController {
         Long memberIdx = memberService.addMember(httpServletRequest, request);
         return ResponseEntity.ok(new JsonResponse(201, "Success sign up", memberIdx));
     }
+
+    @GetMapping("/v1/members/refresh")
+    public ResponseEntity<Object> refreshToken(HttpServletRequest httpServletRequest) {
+        String token = memberService.refreshToken(httpServletRequest);
+        return ResponseEntity.ok(new JsonResponse(200, "Success refresh token", token));
+    }
 }

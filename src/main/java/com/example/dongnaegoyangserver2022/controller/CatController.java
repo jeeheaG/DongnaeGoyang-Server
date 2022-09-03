@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CatController {
 //    private final CatService catService;
 
-    @GetMapping("/api/cats/hello")
+    @GetMapping("/v1/cats/hello")
     public ResponseEntity<Object> hello() {
         return ResponseEntity.ok(new JsonResponse(200, "hello 고영", "test"));
     }

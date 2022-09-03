@@ -25,8 +25,8 @@ public class JwtTokenProvider {
 
     private String secretKey = "jhGoyang";
 
-    //토큰 유효시간 : 30분
-    private long tokenValidTime = 30 * 60 * 1000L;
+    //토큰 유효시간 : 7일
+    private long tokenValidTime = 7 * 24 * 60 * 60 * 1000L;
 
     private final UserDetailsService userDetailsService;
 

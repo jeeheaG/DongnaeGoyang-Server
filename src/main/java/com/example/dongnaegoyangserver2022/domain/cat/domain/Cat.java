@@ -1,20 +1,22 @@
 package com.example.dongnaegoyangserver2022.domain.cat.domain;
 
 import com.example.dongnaegoyangserver2022.domain.member.domain.Member;
+import com.example.dongnaegoyangserver2022.global.common.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
-//@Setter
+@Setter //ModelMapper 사용에 필요
 //@DynamicUpdate
-@Builder
+//@Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 @Table(name = "cat")
 @Entity
-public class Cat {
+public class Cat extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long catIdx;
@@ -62,12 +64,20 @@ public class Cat {
     private String feed;
 
     @Column(nullable = false)
-    private Boolean isPhoto;
-
-    @Column(nullable = false)
-    private LocalDate lastUpdate;
+    private boolean isPhoto;
 
     @JoinColumn(name = "member_idx", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
+
+    //-- 연관관계 설정 메서드 --//
+    public void setMember(Member member) {
+        this.member = member;
+    }
+
+
+    //-- 값 설정 메서드 --//
+    public void setIsPhoto(List<String> photoList) {
+        this.isPhoto = photoList != null && !photoList.isEmpty();
+    }
 }

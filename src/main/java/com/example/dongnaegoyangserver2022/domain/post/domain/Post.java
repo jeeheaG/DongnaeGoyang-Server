@@ -2,6 +2,7 @@ package com.example.dongnaegoyangserver2022.domain.post.domain;
 
 import com.example.dongnaegoyangserver2022.domain.cat.domain.Cat;
 import com.example.dongnaegoyangserver2022.domain.member.domain.Member;
+import com.example.dongnaegoyangserver2022.global.common.BaseTimeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,16 +19,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Table(name = "post")
 @Entity
-public class Post {
+public class Post extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postIdx;
 
     @Column(nullable = false)
     private String content;
-
-    @Column(nullable = false)
-    private LocalDateTime dateTime;
 
     @JoinColumn(name = "cat_idx", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)

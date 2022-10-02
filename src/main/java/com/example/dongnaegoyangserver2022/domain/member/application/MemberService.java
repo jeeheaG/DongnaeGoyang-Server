@@ -27,11 +27,28 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class MemberService { // TODO : kakaoId 형변환 없이 전달 흐름 수정해보기, UserPK네이밍 바꾸기??
+public class MemberService {
+    // TODO : kakaoId 형변환 없이 전달 흐름 수정해보기, UserPK네이밍 바꾸기??
+    // TODO : 추후 비즈니스 로직을 도메인으로 이동시키기
+
 //    private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
     private final MemberRepository memberRepository;
+
+    public Member getMemberByHeader(HttpServletRequest servletRequest) {
+        String token = jwtTokenProvider.resolveToken(servletRequest); //헤더에서 토큰 가져오기
+        Long kakaoId = Long.parseLong(jwtTokenProvider.getUserPK(token));
+
+        // DB확인하고 거절 or 토큰발급
+        Optional<Member> memberOptional = memberRepository.findByKakaoId(kakaoId);
+        if(memberOptional.isEmpty()){
+            System.out.println("No member, kakao id : "+ kakaoId);
+            throw new RestApiException(MemberErrorCode.NOT_EXIST_KAKAO_MEMBER);
+        }
+
+        return memberOptional.get();
+    }
 
     public String checkTokenInfo(HttpServletRequest httpServletRequest){
         String token = jwtTokenProvider.resolveToken(httpServletRequest); //헤더에서 토큰 가져오기
@@ -129,7 +146,7 @@ public class MemberService { // TODO : kakaoId 형변환 없이 전달 흐름 �
                 .sido(si)
                 .gugun(gu+" "+dong) //TODO : 추후 수정 필요
                 .login_type("kakao")
-                .roles(Collections.singletonList("ROLE_USER")) //회원가입 시 role을 USER로 설정 //TODO : ?흠 이게 어디에 저장되지...
+                .roles(Collections.singletonList("ROLE_USER")) //회원가입 시 role을 USER로 설정 //TODO : ?흠 이게 DB에 저장되네..
                 .build();
 
         return memberRepository.save(newMember).getMemberIdx(); //save 하고 바로 Idx값 구하기

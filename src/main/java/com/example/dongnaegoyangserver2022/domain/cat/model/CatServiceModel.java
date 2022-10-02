@@ -1,6 +1,6 @@
-package com.example.dongnaegoyangserver2022.domain.cat.dto;
+package com.example.dongnaegoyangserver2022.domain.cat.model;
 
-import com.example.dongnaegoyangserver2022.domain.cat.model.CatServiceModel.*;
+import com.example.dongnaegoyangserver2022.domain.cat.domain.Cat;
 import com.example.dongnaegoyangserver2022.global.common.ModelMapperUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,17 +8,13 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-public class CatRequest {
+public class CatServiceModel {
 
-
+//    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     @Data //Equivalent to @Getter @Setter @RequiredArgsConstructor @ToString @EqualsAndHashCode
-    public static class CreateRequest {
-
-//        @Autowired
-//        private ModelMapper modelMapper;
-
+    public static class CreateModel {
         private String name;
         private int color;
         private int size;
@@ -36,14 +32,10 @@ public class CatRequest {
         private String feed = null;
         private List<String> photoList = null;
 
-        public CreateModel toServiceModel() {
-//        CatServiceModel.createModel model = new CatServiceModel.createModel(
-//            //...
-//        );
-            CreateModel model = ModelMapperUtil.getModelMapper().map(this, CreateModel.class);
-            return model;
+        public Cat toEntity() {
+            Cat cat = ModelMapperUtil.getModelMapper().map(this, Cat.class);
+            return cat;
         }
+
     }
-
-
 }

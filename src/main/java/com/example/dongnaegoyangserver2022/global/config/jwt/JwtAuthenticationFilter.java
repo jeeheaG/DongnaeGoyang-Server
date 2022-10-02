@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends GenericFilterBean {
+public class JwtAuthenticationFilter extends GenericFilterBean { //GenericFilterBean를 상속받아 필터 구현. 필터가 자동 등록됨
 
     private final JwtTokenProvider jwtTokenProvider;
 

@@ -1,4 +1,4 @@
-package com.example.dongnaegoyangserver2022.global;
+package com.example.dongnaegoyangserver2022.global.test;
 
 import com.example.dongnaegoyangserver2022.global.config.exception.RestApiException;
 import com.example.dongnaegoyangserver2022.global.config.exception.error.CommonErrorCode;

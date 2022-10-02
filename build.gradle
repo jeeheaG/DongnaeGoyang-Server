@@ -1,3 +1,9 @@
+/*buildscript {
+    ext {
+        springBootVersion =
+    }
+}*/
+
 plugins {
     id 'org.springframework.boot' version '2.7.2'
     id 'io.spring.dependency-management' version '1.0.12.RELEASE'
@@ -21,7 +27,8 @@ repositories {
 dependencies {
     //spring boot, spring boot web
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'junit:junit:4.13.1' //JUnit4 자동생성시킴
+    testImplementation 'org.springframework.boot:spring-boot-starter-test' //테스트코드 사용 설정들 자동 준비해줌
 
     //Spring Security, JWT
     implementation 'org.springframework.boot:spring-boot-starter-security'

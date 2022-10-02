@@ -3,6 +3,7 @@ package com.example.dongnaegoyangserver2022.global.config.security;
 import com.example.dongnaegoyangserver2022.global.config.jwt.JwtAuthenticationFilter;
 import com.example.dongnaegoyangserver2022.global.config.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -45,7 +46,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter { //TODO : d
                 .authorizeRequests() //요청에 대한 사용권한 체크
 //                .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/members/**").hasRole("USER")
-                .antMatchers("/**").permitAll() //그 외 요청들은 누구나 접근 허용
+                .antMatchers("/","/**").permitAll() //그 외 요청들은 누구나 접근 허용
+                .antMatchers("/v1/cats/hello-string", "/v1/cats/hello").permitAll()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
                         UsernamePasswordAuthenticationFilter.class);

@@ -14,7 +14,7 @@ public class CatServiceModel {
     @NoArgsConstructor
     @AllArgsConstructor
     @Data //Equivalent to @Getter @Setter @RequiredArgsConstructor @ToString @EqualsAndHashCode
-    public static class CreateModel {
+    public static class CreateCatModel {
         private String name;
         private int color;
         private int size;

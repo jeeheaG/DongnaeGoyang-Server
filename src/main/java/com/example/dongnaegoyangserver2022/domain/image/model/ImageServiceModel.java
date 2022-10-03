@@ -2,8 +2,6 @@ package com.example.dongnaegoyangserver2022.domain.image.model;
 
 import com.example.dongnaegoyangserver2022.domain.cat.domain.Cat;
 import com.example.dongnaegoyangserver2022.domain.image.domain.Image;
-import com.example.dongnaegoyangserver2022.global.config.exception.RestApiException;
-import com.example.dongnaegoyangserver2022.global.config.exception.error.CommonErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +14,7 @@ public class ImageServiceModel {
     @AllArgsConstructor
     @NoArgsConstructor
     @Data
-    public static class CreateModel {
+    public static class CreateImageModel {
         private List<String> photoList;
         private Cat cat;
 

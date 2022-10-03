@@ -1,11 +1,13 @@
 package com.example.dongnaegoyangserver2022.domain.cat.domain;
 
+import com.example.dongnaegoyangserver2022.domain.cat.dto.CatResponse;
 import com.example.dongnaegoyangserver2022.domain.member.domain.Member;
 import com.example.dongnaegoyangserver2022.global.common.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -79,5 +81,36 @@ public class Cat extends BaseTimeEntity {
     //-- 값 설정 메서드 --//
     public void setIsPhoto(List<String> photoList) {
         this.isPhoto = photoList != null && !photoList.isEmpty();
+    }
+
+
+    //-- response DTO 변환 메서드 --//
+    public static CatResponse.CatListResponseContainer toCatListResponseContainer(List<Cat> catList) {
+        ArrayList<CatResponse.CatListResponse> catListResponses = new ArrayList<>();
+        for(Cat cat : catList) {
+            catListResponses.add(cat.toCatListResponse());
+        }
+        return CatResponse.CatListResponseContainer.builder()
+                .catList(catListResponses)
+                .build();
+    }
+
+    public CatResponse.CatListResponse toCatListResponse() {
+        return CatResponse.CatListResponse.builder()
+                .catIdx(this.catIdx)
+                .name(this.name)
+                .appearance(this.toCatAppearance())
+                .build();
+    }
+
+    public CatResponse.CatAppearance toCatAppearance() {
+        //ModelMapper사용 가능
+        return CatResponse.CatAppearance.builder()
+                .color(this.color)
+                .ear(this.ear)
+                .size(this.size)
+                .tail(this.tail)
+                .whisker(this.whisker)
+                .build();
     }
 }

@@ -25,7 +25,6 @@ public class CatRequest {
         private int ear;
         private int tail;
         private int whisker;
-        private String mainHabitat;
         private String sex;
         private String age;
         private String note;

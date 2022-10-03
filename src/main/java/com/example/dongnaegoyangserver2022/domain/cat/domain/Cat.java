@@ -1,9 +1,12 @@
 package com.example.dongnaegoyangserver2022.domain.cat.domain;
 
 import com.example.dongnaegoyangserver2022.domain.cat.dto.CatResponse;
+import com.example.dongnaegoyangserver2022.domain.image.domain.Image;
 import com.example.dongnaegoyangserver2022.domain.member.domain.Member;
 import com.example.dongnaegoyangserver2022.global.common.BaseTimeEntity;
+import com.example.dongnaegoyangserver2022.global.common.ModelMapperUtil;
 import lombok.*;
+import org.modelmapper.ModelMapper;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -95,6 +98,14 @@ public class Cat extends BaseTimeEntity {
                 .build();
     }
 
+    public static List<CatResponse.OtherCatResponse> toOtherCatResponse(List<Cat> catList) {
+        ArrayList<CatResponse.OtherCatResponse> otherCatResponses = new ArrayList<>();
+        for(Cat cat : catList) {
+            otherCatResponses.add(ModelMapperUtil.getModelMapper().map(cat, CatResponse.OtherCatResponse.class));
+        }
+        return otherCatResponses;
+    }
+
     public CatResponse.CatListResponse toCatListResponse() {
         return CatResponse.CatListResponse.builder()
                 .catIdx(this.catIdx)
@@ -104,7 +115,7 @@ public class Cat extends BaseTimeEntity {
     }
 
     public CatResponse.CatAppearance toCatAppearance() {
-        //ModelMapper사용 가능
+        //TODO : ModelMapper사용 가능
         return CatResponse.CatAppearance.builder()
                 .color(this.color)
                 .ear(this.ear)
@@ -112,5 +123,17 @@ public class Cat extends BaseTimeEntity {
                 .tail(this.tail)
                 .whisker(this.whisker)
                 .build();
+    }
+
+    public CatResponse.CatDetailResponse toCatDetailResponse(List<Image> imageList, List<Cat> otherCatList) {
+        CatResponse.CatDetailResponse catDetailResponse = ModelMapperUtil.getModelMapper().map(this, CatResponse.CatDetailResponse.class);
+
+        catDetailResponse.setPlace(this.sido + " " + this.gugun);
+        catDetailResponse.setAppearance(this.toCatAppearance());
+        catDetailResponse.setUser(this.member.toMemberSimpleResponse());
+        catDetailResponse.setPhotoList(Image.toStringList(imageList));
+        catDetailResponse.setOtherCatList(toOtherCatResponse(otherCatList));
+
+        return catDetailResponse;
     }
 }

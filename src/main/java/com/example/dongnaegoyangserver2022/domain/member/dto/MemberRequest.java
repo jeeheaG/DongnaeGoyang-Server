@@ -10,14 +10,14 @@ public class MemberRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     @Data
-    public static class loginRequest{
+    public static class LoginRequest {
         private String loginType;
     }
 
     @NoArgsConstructor
     @AllArgsConstructor
     @Data
-    public static class signUpRequest{
+    public static class SignUpRequest {
         private String si;
         private String gu;
         private String dong;

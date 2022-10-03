@@ -1,5 +1,7 @@
 package com.example.dongnaegoyangserver2022.domain.member.domain;
 
+import com.example.dongnaegoyangserver2022.domain.member.dto.MemberResponse;
+import com.example.dongnaegoyangserver2022.global.common.ModelMapperUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,6 +48,11 @@ public class Member implements UserDetails { //NotNull인 게 하나도 없음..
     @Column(nullable = false, unique = true)
     private Long kakaoId; //카카오 회원번호(고유값)
 
+    //-- to response dto 메서드--//
+
+    public MemberResponse.MemberSimpleResponse toMemberSimpleResponse() {
+        return ModelMapperUtil.getModelMapper().map(this, MemberResponse.MemberSimpleResponse.class);
+    }
 
 
     ////////////////////////////// implements UserDetails //////////////////////////////

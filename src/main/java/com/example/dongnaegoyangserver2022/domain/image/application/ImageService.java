@@ -1,7 +1,9 @@
 package com.example.dongnaegoyangserver2022.domain.image.application;
 
+import com.example.dongnaegoyangserver2022.domain.cat.domain.Cat;
 import com.example.dongnaegoyangserver2022.domain.image.dao.ImageRepository;
 import com.example.dongnaegoyangserver2022.domain.image.domain.Image;
+import com.example.dongnaegoyangserver2022.domain.image.model.ImageServiceModel;
 import com.example.dongnaegoyangserver2022.domain.image.model.ImageServiceModel.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,5 +21,9 @@ public class ImageService {
         List<Image> imageList = model.toEntityList();
 
         imageRepository.saveAll(imageList);
+    }
+
+    public List<Image> getImageList(Cat cat) {
+        return imageRepository.findByCat(cat);
     }
 }

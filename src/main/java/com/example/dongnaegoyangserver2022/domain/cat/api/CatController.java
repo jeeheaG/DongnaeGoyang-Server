@@ -21,7 +21,7 @@ public class CatController {
     @PostMapping("/v1/cats")
     public ResponseEntity<Object> createCat(HttpServletRequest servletRequest,
                                             @RequestBody CatRequest.CreateRequest request) {
-        Long catIdx = catService.addCat(servletRequest, request.toServiceModel());
+        Long catIdx = catService.addCat(servletRequest, request.toCatServiceModel());
         return ResponseEntity.ok(new JsonResponse(201, "success createCat", catIdx));
     }
 

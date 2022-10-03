@@ -3,6 +3,8 @@ package com.example.dongnaegoyangserver2022.domain.cat.application;
 import com.example.dongnaegoyangserver2022.domain.cat.dao.CatRepository;
 import com.example.dongnaegoyangserver2022.domain.cat.domain.Cat;
 import com.example.dongnaegoyangserver2022.domain.cat.model.CatServiceModel.*;
+import com.example.dongnaegoyangserver2022.domain.image.application.ImageService;
+import com.example.dongnaegoyangserver2022.domain.image.model.ImageServiceModel;
 import com.example.dongnaegoyangserver2022.domain.member.application.MemberService;
 import com.example.dongnaegoyangserver2022.domain.member.domain.Member;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,8 @@ public class CatService {
     public final CatRepository catRepository;
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private ImageService imageService;
 
     public Long addCat(HttpServletRequest servletRequest, CreateModel model){
 //        log.info("[addCat] model: "+model); //잘 됨
@@ -32,9 +36,11 @@ public class CatService {
         cat.setIsPhoto(model.getPhotoList());
 
         Long catIdx = catRepository.save(cat).getCatIdx();
-        //TODO : Image 테이블에 사진 저장
+
+        //image
         if(cat.isPhoto()) {
-            //..image
+            ImageServiceModel.CreateModel imageModel = new ImageServiceModel.CreateModel(model.getPhotoList(), cat);
+            imageService.createImage(imageModel);
         }
 
         return catIdx;

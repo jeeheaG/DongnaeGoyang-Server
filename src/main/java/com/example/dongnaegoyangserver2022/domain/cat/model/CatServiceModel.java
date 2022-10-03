@@ -14,7 +14,7 @@ public class CatServiceModel {
     @NoArgsConstructor
     @AllArgsConstructor
     @Data //Equivalent to @Getter @Setter @RequiredArgsConstructor @ToString @EqualsAndHashCode
-    public static class CreateModel {
+    public static class CreateCatModel {
         private String name;
         private int color;
         private int size;
@@ -36,6 +36,8 @@ public class CatServiceModel {
             Cat cat = ModelMapperUtil.getModelMapper().map(this, Cat.class);
             return cat;
         }
+
+
 
     }
 }

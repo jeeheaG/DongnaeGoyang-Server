@@ -1,11 +1,16 @@
 package com.example.dongnaegoyangserver2022.domain.cat.domain;
 
+import com.example.dongnaegoyangserver2022.domain.cat.dto.CatResponse;
+import com.example.dongnaegoyangserver2022.domain.image.domain.Image;
 import com.example.dongnaegoyangserver2022.domain.member.domain.Member;
 import com.example.dongnaegoyangserver2022.global.common.BaseTimeEntity;
+import com.example.dongnaegoyangserver2022.global.common.ModelMapperUtil;
 import lombok.*;
+import org.modelmapper.ModelMapper;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -79,5 +84,56 @@ public class Cat extends BaseTimeEntity {
     //-- 값 설정 메서드 --//
     public void setIsPhoto(List<String> photoList) {
         this.isPhoto = photoList != null && !photoList.isEmpty();
+    }
+
+
+    //-- response DTO 변환 메서드 --//
+    public static CatResponse.CatListResponseContainer toCatListResponseContainer(List<Cat> catList) {
+        ArrayList<CatResponse.CatListResponse> catListResponses = new ArrayList<>();
+        for(Cat cat : catList) {
+            catListResponses.add(cat.toCatListResponse());
+        }
+        return CatResponse.CatListResponseContainer.builder()
+                .catList(catListResponses)
+                .build();
+    }
+
+    public static List<CatResponse.OtherCatResponse> toOtherCatResponse(List<Cat> catList) {
+        ArrayList<CatResponse.OtherCatResponse> otherCatResponses = new ArrayList<>();
+        for(Cat cat : catList) {
+            otherCatResponses.add(ModelMapperUtil.getModelMapper().map(cat, CatResponse.OtherCatResponse.class));
+        }
+        return otherCatResponses;
+    }
+
+    public CatResponse.CatListResponse toCatListResponse() {
+        return CatResponse.CatListResponse.builder()
+                .catIdx(this.catIdx)
+                .name(this.name)
+                .appearance(this.toCatAppearance())
+                .build();
+    }
+
+    public CatResponse.CatAppearance toCatAppearance() {
+        //TODO : ModelMapper사용 가능
+        return CatResponse.CatAppearance.builder()
+                .color(this.color)
+                .ear(this.ear)
+                .size(this.size)
+                .tail(this.tail)
+                .whisker(this.whisker)
+                .build();
+    }
+
+    public CatResponse.CatDetailResponse toCatDetailResponse(List<Image> imageList, List<Cat> otherCatList) {
+        CatResponse.CatDetailResponse catDetailResponse = ModelMapperUtil.getModelMapper().map(this, CatResponse.CatDetailResponse.class);
+
+        catDetailResponse.setPlace(this.sido + " " + this.gugun);
+        catDetailResponse.setAppearance(this.toCatAppearance());
+        catDetailResponse.setUser(this.member.toMemberSimpleResponse());
+        catDetailResponse.setPhotoList(Image.toStringList(imageList));
+        catDetailResponse.setOtherCatList(toOtherCatResponse(otherCatList));
+
+        return catDetailResponse;
     }
 }

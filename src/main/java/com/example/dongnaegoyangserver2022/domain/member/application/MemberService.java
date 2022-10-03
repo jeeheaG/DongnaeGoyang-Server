@@ -60,7 +60,7 @@ public class MemberService {
         return "kakaoId : "+kakaoId+" / auth : "+auth+" / valid : "+valid;
     }
 
-    public MemberResponse.loginResponse login(HttpServletRequest httpServletRequest, MemberRequest.loginRequest request){
+    public MemberResponse.LoginResponse login(HttpServletRequest httpServletRequest, MemberRequest.LoginRequest request){
         if(!request.getLoginType().equals("kakao")){
             System.out.println("loginType : "+ request.getLoginType());
             throw new CustomException(HttpStatus.CONFLICT, "Login type error.");
@@ -97,7 +97,7 @@ public class MemberService {
         String token = jwtTokenProvider.createToken(kakaoId.toString(), member.getRoles()); //사용자 식별용 고유값인 kakaoId와 권한단계인 role을 담은 토큰 생성
 //        System.out.println("token : "+token);
 
-        MemberResponse.loginResponse loginResponse = new MemberResponse.loginResponse(
+        MemberResponse.LoginResponse loginResponse = new MemberResponse.LoginResponse(
                 token,
                 member.getNickname(),
                 member.getSido(),
@@ -107,7 +107,7 @@ public class MemberService {
         return loginResponse;
     }
 
-    public Long addMember(HttpServletRequest httpServletRequest, MemberRequest.signUpRequest request){
+    public Long addMember(HttpServletRequest httpServletRequest, MemberRequest.SignUpRequest request){
         String kakaoToken = httpServletRequest.getHeader("Authorization");
         HashMap<String, Object> resultMap = getKakaoInfo(kakaoToken, "signUp");
 

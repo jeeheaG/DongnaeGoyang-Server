@@ -128,11 +128,12 @@ public class Cat extends BaseTimeEntity {
     public CatResponse.CatDetailResponse toCatDetailResponse(Long kakaoId, List<Image> imageList, List<Cat> otherCatList) {
         CatResponse.CatDetailResponse catDetailResponse = ModelMapperUtil.getModelMapper().map(this, CatResponse.CatDetailResponse.class);
 
+        catDetailResponse.setHealthInfoCount(countHealthInfo());
         catDetailResponse.setIsWriter(this.member.getKakaoId().equals(kakaoId));
         catDetailResponse.setPlace(this.sido + " " + this.gugun);
         catDetailResponse.setAppearance(this.toCatAppearance());
-        catDetailResponse.setWriter(this.member.toMemberSimpleResponse());
         catDetailResponse.setPhotoList(Image.toStringList(imageList));
+        catDetailResponse.setWriter(this.member.toMemberSimpleResponse());
         catDetailResponse.setOtherCatList(toOtherCatResponse(otherCatList));
 
         return catDetailResponse;
@@ -151,10 +152,23 @@ public class Cat extends BaseTimeEntity {
     public CatResponse.CatDetailAdditionalResponse toCatDetailAdditionalResponse(List<Image> imageList, List<Cat> otherCatList) {
         CatResponse.CatDetailAdditionalResponse catDetailAdditionalResponse = ModelMapperUtil.getModelMapper().map(this, CatResponse.CatDetailAdditionalResponse.class);
 
-        catDetailAdditionalResponse.setWriter(this.member.toMemberSimpleResponse());
         catDetailAdditionalResponse.setPhotoList(Image.toStringList(imageList));
+        catDetailAdditionalResponse.setHealthInfoCount(countHealthInfo());
+        catDetailAdditionalResponse.setWriter(this.member.toMemberSimpleResponse());
         catDetailAdditionalResponse.setOtherCatList(toOtherCatResponse(otherCatList));
 
         return catDetailAdditionalResponse;
+    }
+
+    //-- function --//
+    private int countHealthInfo() {
+        int count = 0;
+        if(this.tnr != null) {
+            count += 1;
+        }
+        if(this.feed != null) {
+            count += 1;
+        }
+        return count;
     }
 }

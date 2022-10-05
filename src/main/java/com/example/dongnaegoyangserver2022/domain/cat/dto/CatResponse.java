@@ -57,6 +57,7 @@ public class CatResponse {
         private String note;
         private CatAppearance appearance;
         private List<String> photoList = null;
+        private int healthInfoCount;
         private String tnr = null;
         private String feed = null;
         private LocalDateTime modifiedTime;
@@ -85,6 +86,7 @@ public class CatResponse {
     public static class CatDetailAdditionalResponse {
         private Long catIdx;
         private List<String> photoList = null;
+        private int healthInfoCount;
         private String tnr = null;
         private String feed = null;
         private LocalDateTime modifiedTime;

@@ -60,19 +60,38 @@ public class CatService {
         return Cat.toCatListResponseContainer(content);
     }
 
-    public CatResponse.CatDetailResponse getCatDetail(Long catIdx){
-        Cat cat = catRepository.findById(catIdx)
-                .orElseThrow(() -> new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND));
+    public CatResponse.CatDetailResponse getCatDetail(Long kakaoId, Long catIdx){
+        Cat cat = getCatByIdx(catIdx);
 
         log.info("[getCatDetail] cat : "+cat);
+
+        Member writer = cat.getMember();
+        List<Cat> otherCatList = catRepository.findOther5BySidoAndGugunRandom(writer.getSido(), writer.getGugun(), cat.getCatIdx());
+
+        return cat.toCatDetailResponse(kakaoId, imageService.getImageList(cat), otherCatList);
+    }
+
+    public CatResponse.CatDetailBasicResponse getCatDetailBasic(Long kakaoId, Long catIdx){
+        Cat cat = getCatByIdx(catIdx);
+        log.info("[getCatDetailBasic] cat : "+cat);
+
+        return cat.toCatDetailBasicResponse(kakaoId);
+    }
+
+    public CatResponse.CatDetailAdditionalResponse getCatDetailAdditional(Long catIdx){
+        Cat cat = getCatByIdx(catIdx);
+        log.info("[getCatDetailAdditional] cat : "+cat);
 
         Member owner = cat.getMember();
         List<Cat> otherCatList = catRepository.findOther5BySidoAndGugunRandom(owner.getSido(), owner.getGugun(), cat.getCatIdx());
 
-        return cat.toCatDetailResponse(imageService.getImageList(cat), otherCatList);
+        return cat.toCatDetailAdditionalResponse(imageService.getImageList(cat), otherCatList);
     }
 
     //-- function --//
-
+    private Cat getCatByIdx(Long catIdx){
+        return catRepository.findById(catIdx)
+                .orElseThrow(() -> new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND));
+    }
 
 }

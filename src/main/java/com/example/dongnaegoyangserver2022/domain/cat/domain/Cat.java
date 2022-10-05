@@ -125,15 +125,36 @@ public class Cat extends BaseTimeEntity {
                 .build();
     }
 
-    public CatResponse.CatDetailResponse toCatDetailResponse(List<Image> imageList, List<Cat> otherCatList) {
+    public CatResponse.CatDetailResponse toCatDetailResponse(Long kakaoId, List<Image> imageList, List<Cat> otherCatList) {
         CatResponse.CatDetailResponse catDetailResponse = ModelMapperUtil.getModelMapper().map(this, CatResponse.CatDetailResponse.class);
 
+        catDetailResponse.setIsWriter(this.member.getKakaoId().equals(kakaoId));
         catDetailResponse.setPlace(this.sido + " " + this.gugun);
         catDetailResponse.setAppearance(this.toCatAppearance());
-        catDetailResponse.setUser(this.member.toMemberSimpleResponse());
+        catDetailResponse.setWriter(this.member.toMemberSimpleResponse());
         catDetailResponse.setPhotoList(Image.toStringList(imageList));
         catDetailResponse.setOtherCatList(toOtherCatResponse(otherCatList));
 
         return catDetailResponse;
+    }
+
+    public CatResponse.CatDetailBasicResponse toCatDetailBasicResponse(Long kakaoId) {
+        CatResponse.CatDetailBasicResponse catDetailBasicResponse = ModelMapperUtil.getModelMapper().map(this, CatResponse.CatDetailBasicResponse.class);
+
+        catDetailBasicResponse.setIsWriter(this.member.getKakaoId().equals(kakaoId));
+        catDetailBasicResponse.setPlace(this.sido + " " + this.gugun);
+        catDetailBasicResponse.setAppearance(this.toCatAppearance());
+
+        return catDetailBasicResponse;
+    }
+
+    public CatResponse.CatDetailAdditionalResponse toCatDetailAdditionalResponse(List<Image> imageList, List<Cat> otherCatList) {
+        CatResponse.CatDetailAdditionalResponse catDetailAdditionalResponse = ModelMapperUtil.getModelMapper().map(this, CatResponse.CatDetailAdditionalResponse.class);
+
+        catDetailAdditionalResponse.setWriter(this.member.toMemberSimpleResponse());
+        catDetailAdditionalResponse.setPhotoList(Image.toStringList(imageList));
+        catDetailAdditionalResponse.setOtherCatList(toOtherCatResponse(otherCatList));
+
+        return catDetailAdditionalResponse;
     }
 }

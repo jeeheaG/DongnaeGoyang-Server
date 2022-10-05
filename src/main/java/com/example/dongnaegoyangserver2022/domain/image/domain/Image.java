@@ -1,6 +1,8 @@
 package com.example.dongnaegoyangserver2022.domain.image.domain;
 
 import com.example.dongnaegoyangserver2022.domain.cat.domain.Cat;
+import com.example.dongnaegoyangserver2022.domain.image.dto.ImageResponse;
+import com.example.dongnaegoyangserver2022.global.common.ModelMapperUtil;
 import lombok.*;
 
 import javax.persistence.*;
@@ -27,11 +29,7 @@ public class Image {
     @ManyToOne(fetch = FetchType.LAZY)
     private Cat cat;
 
-//    public static List<String> toStringList(List<Image> imageList) {
-//        ArrayList<String> imageStringList = new ArrayList<>();
-//        for(Image image : imageList){
-//            imageStringList.add(image.url);
-//        }
-//        return imageStringList;
-//    }
+    public ImageResponse.ImageSimpleResponse toStringSimpleResponse() {
+        return ModelMapperUtil.getModelMapper().map(this, ImageResponse.ImageSimpleResponse.class);
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.dongnaegoyangserver2022.domain.cat.dto;
 
+import com.example.dongnaegoyangserver2022.domain.image.dto.ImageResponse;
 import com.example.dongnaegoyangserver2022.domain.member.dto.MemberResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -56,7 +57,7 @@ public class CatResponse {
         private String oftenSeen;
         private String note;
         private CatAppearance appearance;
-        private List<String> photoList = null;
+        private List<ImageResponse.ImageSimpleResponse> photoList = null;
         private int healthInfoCount;
         private String tnr = null;
         private String feed = null;
@@ -85,7 +86,7 @@ public class CatResponse {
     @Data
     public static class CatDetailAdditionalResponse {
         private Long catIdx;
-        private List<String> photoList = null;
+        private List<ImageResponse.ImageSimpleResponse> photoList = null;
         private int healthInfoCount;
         private String tnr = null;
         private String feed = null;

@@ -83,6 +83,9 @@ public class Cat extends BaseTimeEntity {
 
 
     //-- 값 설정 메서드 --//
+    public void setIsPhoto(boolean isPhoto) {
+        this.isPhoto = isPhoto;
+    }
     public void setIsPhoto(List<String> photoList) {
         this.isPhoto = photoList != null && !photoList.isEmpty();
     }
@@ -124,8 +127,7 @@ public class Cat extends BaseTimeEntity {
         catDetailResponse.setIsWriter(this.member.getKakaoId().equals(kakaoId));
         catDetailResponse.setPlace(this.sido + " " + this.gugun);
         catDetailResponse.setAppearance(toCatAppearance());
-//        catDetailResponse.setPhotoList(Image.toStringList(imageList));
-        catDetailResponse.setPhotoList(imageList.stream().map(image -> image.getUrl()).collect(Collectors.toList()));
+        catDetailResponse.setPhotoList(imageList.stream().map(image -> image.toStringSimpleResponse()).collect(Collectors.toList()));
         catDetailResponse.setWriter(this.member.toMemberSimpleResponse());
         catDetailResponse.setOtherCatList(toOtherCatResponse(otherCatList));
 
@@ -145,7 +147,7 @@ public class Cat extends BaseTimeEntity {
     public CatResponse.CatDetailAdditionalResponse toCatDetailAdditionalResponse(List<Image> imageList, List<Cat> otherCatList) {
         CatResponse.CatDetailAdditionalResponse catDetailAdditionalResponse = ModelMapperUtil.getModelMapper().map(this, CatResponse.CatDetailAdditionalResponse.class);
 
-        catDetailAdditionalResponse.setPhotoList(imageList.stream().map(image -> image.getUrl()).collect(Collectors.toList()));
+        catDetailAdditionalResponse.setPhotoList(imageList.stream().map(image -> image.toStringSimpleResponse()).collect(Collectors.toList()));
         catDetailAdditionalResponse.setHealthInfoCount(countHealthInfo());
         catDetailAdditionalResponse.setWriter(this.member.toMemberSimpleResponse());
         catDetailAdditionalResponse.setOtherCatList(toOtherCatResponse(otherCatList));

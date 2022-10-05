@@ -6,22 +6,20 @@ import com.example.dongnaegoyangserver2022.domain.cat.dto.CatResponse;
 import com.example.dongnaegoyangserver2022.domain.cat.model.CatServiceModel.*;
 import com.example.dongnaegoyangserver2022.domain.image.application.ImageService;
 import com.example.dongnaegoyangserver2022.domain.image.model.ImageServiceModel;
-import com.example.dongnaegoyangserver2022.domain.member.application.MemberService;
 import com.example.dongnaegoyangserver2022.domain.member.domain.Member;
+import com.example.dongnaegoyangserver2022.global.common.ModelMapperUtil;
 import com.example.dongnaegoyangserver2022.global.config.exception.RestApiException;
 import com.example.dongnaegoyangserver2022.global.config.exception.error.CommonErrorCode;
+import com.example.dongnaegoyangserver2022.global.config.exception.error.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -47,7 +45,7 @@ public class CatService {
         //image
         if(cat.isPhoto()) {
             ImageServiceModel.CreateImageModel imageModel = new ImageServiceModel.CreateImageModel(model.getPhotoList(), cat);
-            imageService.createImage(imageModel);
+            imageService.createImages(imageModel);
         }
 
         return catIdx;
@@ -91,25 +89,36 @@ public class CatService {
         return cat.toCatDetailAdditionalResponse(imageService.getImageList(cat), otherCatList);
     }
 
-    public Long updateCat(Member member, CreateCatModel model){
-//        log.info("[addCat] model: "+model); //잘 됨
-        //cat을 만들고 member를 가져옴
-        Cat cat = model.toEntity();
+    public Long updateCat(Member member, Long catIdx, UpdateCatModel model){
+        Cat cat = getCatByIdx(catIdx);
 
-        //cat에 member와 isPhoto를 설정함
-        cat.setIsPhoto(model.getPhotoList());
-
-        Long catIdx = catRepository.save(cat).getCatIdx();
-
-        //image
-        if(cat.isPhoto()) {
-            ImageServiceModel.CreateImageModel imageModel = new ImageServiceModel.CreateImageModel(model.getPhotoList(), cat);
-            imageService.createImage(imageModel);
+        if(member != cat.getMember()){
+            throw new RestApiException(MemberErrorCode.MEMBER_FORBIDDEN);
         }
 
-        return catIdx;
-    }
+        ModelMapper mapper = ModelMapperUtil.getModelMapper();
+        ModelMapperUtil.setSkipNullEnabled(true);
+        mapper.map(model, cat);
+        ModelMapperUtil.setSkipNullEnabled(false);
+        // static이니까 다시 setSkipNullEnabled(false) 해줘야 하나???oo
+        // 원래 바디에 null로 하더라도 변수를 다 보내줬어야 했나.....? 아니 그게 아니라 원래 json안에 주석 못넣음........
 
+        //image
+        if(model.getCreatePhotoList() != null && !model.getCreatePhotoList().isEmpty()){
+            imageService.createImages(new ImageServiceModel.CreateImageModel(model.getCreatePhotoList(), cat));
+        }
+
+        if(model.getDeletePhotoList() != null && !model.getDeletePhotoList().isEmpty()){
+            imageService.deleteImages(model.getDeletePhotoList());
+        }
+
+        //isPhoto
+        if((model.getCreatePhotoList() != null && !model.getCreatePhotoList().isEmpty()) || (model.getDeletePhotoList() != null && !model.getDeletePhotoList().isEmpty())){
+            cat.setIsPhoto(!imageService.getImageList(cat).isEmpty());
+        }
+
+        return catRepository.save(cat).getCatIdx();
+    }
 
     //-- function --//
     private Cat getCatByIdx(Long catIdx){

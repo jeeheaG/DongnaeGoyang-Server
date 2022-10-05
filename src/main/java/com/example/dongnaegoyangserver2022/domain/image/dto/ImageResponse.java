@@ -7,6 +7,6 @@ public class ImageResponse {
     @Data
     public static class ImageSimpleResponse{
         private Long imageIdx;
-        private String imageUrl;
+        private String url;
     }
 }

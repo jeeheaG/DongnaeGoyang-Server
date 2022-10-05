@@ -72,11 +72,12 @@ public class CatController {
 
     @PatchMapping("/v1/cats/{catIdx}")
     public ResponseEntity<Object> updateCat(HttpServletRequest servletRequest,
-                                            @RequestBody CatRequest.CreateCatRequest request) {
+                                            @PathVariable Long catIdx,
+                                            @RequestBody CatRequest.UpdateCatRequest request) {
         log.info("[API] updateCat");
         Member member = memberService.getMemberByHeader(servletRequest);
-        Long catIdx = catService.updateCat(member, request.toCatServiceModel());
-        return ResponseEntity.ok(new JsonResponse(200, "success updateCat", catIdx));
+        Long updatedCatIdx = catService.updateCat(member, catIdx, request.toCatServiceModel());
+        return ResponseEntity.ok(new JsonResponse(200, "success updateCat", updatedCatIdx));
     }
 
     @GetMapping("/v1/cats/hello")

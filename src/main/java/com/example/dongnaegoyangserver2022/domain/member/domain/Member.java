@@ -2,10 +2,7 @@ package com.example.dongnaegoyangserver2022.domain.member.domain;
 
 import com.example.dongnaegoyangserver2022.domain.member.dto.MemberResponse;
 import com.example.dongnaegoyangserver2022.global.common.ModelMapperUtil;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

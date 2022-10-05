@@ -10,4 +10,8 @@ public class ModelMapperUtil {
     public static ModelMapper getModelMapper() {
         return modelMapper;
     }
+
+    public static void setSkipNullEnabled(boolean value){
+        modelMapper.getConfiguration().setSkipNullEnabled(value);
+    }
 }

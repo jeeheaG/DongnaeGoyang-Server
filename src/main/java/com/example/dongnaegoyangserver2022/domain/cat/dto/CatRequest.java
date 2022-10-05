@@ -14,7 +14,7 @@ public class CatRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     @Data //Equivalent to @Getter @Setter @RequiredArgsConstructor @ToString @EqualsAndHashCode
-    public static class CreateCatRequest { //update 시에도 사용함
+    public static class CreateCatRequest {
 
 //        @Autowired
 //        private ModelMapper modelMapper;
@@ -37,6 +37,35 @@ public class CatRequest {
 
         public CatServiceModel.CreateCatModel toCatServiceModel() {
             CatServiceModel.CreateCatModel model = ModelMapperUtil.getModelMapper().map(this, CatServiceModel.CreateCatModel.class);
+            return model;
+        }
+
+    }
+
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    public static class UpdateCatRequest {
+        private String name = null;
+        private Integer color = null;
+        private Integer size = null;
+        private Integer ear = null;
+        private Integer tail = null;
+        private Integer whisker = null;
+        private String oftenSeen = null;
+        private String sex = null;
+        private String age = null;
+        private String note = null;
+        private String sido = null;
+        private String gugun = null;
+        private String tnr = null;
+        private String feed = null;
+        private List<Long> deletePhotoList = null;
+        private List<String> createPhotoList = null;
+
+        public CatServiceModel.UpdateCatModel toCatServiceModel() {
+            CatServiceModel.UpdateCatModel model = ModelMapperUtil.getModelMapper().map(this, CatServiceModel.UpdateCatModel.class);
             return model;
         }
 

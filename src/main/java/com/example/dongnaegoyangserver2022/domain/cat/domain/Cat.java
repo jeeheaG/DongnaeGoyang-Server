@@ -112,20 +112,10 @@ public class Cat extends BaseTimeEntity {
         return CatResponse.CatListResponse.builder()
                 .catIdx(this.catIdx)
                 .name(this.name)
-                .appearance(this.toCatAppearance())
+                .appearance(toCatAppearance())
                 .build();
     }
 
-    public CatResponse.CatAppearance toCatAppearance() {
-        //TODO : ModelMapper사용 가능
-        return CatResponse.CatAppearance.builder()
-                .color(this.color)
-                .ear(this.ear)
-                .size(this.size)
-                .tail(this.tail)
-                .whisker(this.whisker)
-                .build();
-    }
 
     public CatResponse.CatDetailResponse toCatDetailResponse(Long kakaoId, List<Image> imageList, List<Cat> otherCatList) {
         CatResponse.CatDetailResponse catDetailResponse = ModelMapperUtil.getModelMapper().map(this, CatResponse.CatDetailResponse.class);
@@ -133,8 +123,9 @@ public class Cat extends BaseTimeEntity {
         catDetailResponse.setHealthInfoCount(countHealthInfo());
         catDetailResponse.setIsWriter(this.member.getKakaoId().equals(kakaoId));
         catDetailResponse.setPlace(this.sido + " " + this.gugun);
-        catDetailResponse.setAppearance(this.toCatAppearance());
-        catDetailResponse.setPhotoList(Image.toStringList(imageList));
+        catDetailResponse.setAppearance(toCatAppearance());
+//        catDetailResponse.setPhotoList(Image.toStringList(imageList));
+        catDetailResponse.setPhotoList(imageList.stream().map(image -> image.getUrl()).collect(Collectors.toList()));
         catDetailResponse.setWriter(this.member.toMemberSimpleResponse());
         catDetailResponse.setOtherCatList(toOtherCatResponse(otherCatList));
 
@@ -146,7 +137,7 @@ public class Cat extends BaseTimeEntity {
 
         catDetailBasicResponse.setIsWriter(this.member.getKakaoId().equals(kakaoId));
         catDetailBasicResponse.setPlace(this.sido + " " + this.gugun);
-        catDetailBasicResponse.setAppearance(this.toCatAppearance());
+        catDetailBasicResponse.setAppearance(toCatAppearance());
 
         return catDetailBasicResponse;
     }
@@ -154,7 +145,7 @@ public class Cat extends BaseTimeEntity {
     public CatResponse.CatDetailAdditionalResponse toCatDetailAdditionalResponse(List<Image> imageList, List<Cat> otherCatList) {
         CatResponse.CatDetailAdditionalResponse catDetailAdditionalResponse = ModelMapperUtil.getModelMapper().map(this, CatResponse.CatDetailAdditionalResponse.class);
 
-        catDetailAdditionalResponse.setPhotoList(Image.toStringList(imageList));
+        catDetailAdditionalResponse.setPhotoList(imageList.stream().map(image -> image.getUrl()).collect(Collectors.toList()));
         catDetailAdditionalResponse.setHealthInfoCount(countHealthInfo());
         catDetailAdditionalResponse.setWriter(this.member.toMemberSimpleResponse());
         catDetailAdditionalResponse.setOtherCatList(toOtherCatResponse(otherCatList));
@@ -163,6 +154,9 @@ public class Cat extends BaseTimeEntity {
     }
 
     //-- function --//
+    public CatResponse.CatAppearance toCatAppearance() {
+        return ModelMapperUtil.getModelMapper().map(this, CatResponse.CatAppearance.class);
+    }
 
      public List<CatResponse.OtherCatResponse> toOtherCatResponse(List<Cat> catList) {
          return catList

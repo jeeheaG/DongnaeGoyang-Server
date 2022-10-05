@@ -27,11 +27,11 @@ public class Image {
     @ManyToOne(fetch = FetchType.LAZY)
     private Cat cat;
 
-    public static List<String> toStringList(List<Image> imageList) {
-        ArrayList<String> imageStringList = new ArrayList<>();
-        for(Image image : imageList){
-            imageStringList.add(image.url);
-        }
-        return imageStringList;
-    }
+//    public static List<String> toStringList(List<Image> imageList) {
+//        ArrayList<String> imageStringList = new ArrayList<>();
+//        for(Image image : imageList){
+//            imageStringList.add(image.url);
+//        }
+//        return imageStringList;
+//    }
 }

@@ -12,6 +12,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -108,6 +110,7 @@ public class MemberService {
     }
 
     public Long addMember(HttpServletRequest httpServletRequest, MemberRequest.SignUpRequest request){
+        log.info("[SERVICE] addMember");
         String kakaoToken = httpServletRequest.getHeader("Authorization");
         HashMap<String, Object> resultMap = getKakaoInfo(kakaoToken, "signUp");
 
@@ -168,6 +171,8 @@ public class MemberService {
 
 
     private HashMap<String, Object> getKakaoInfo(String kakaoToken, String type) {
+        log.info("[METHOD] getKakaoInfo");
+
         HashMap<String, Object> resultMap = new HashMap<String, Object>();
         String requestUrl = "https://kapi.kakao.com/v2/user/me";
 
@@ -179,7 +184,9 @@ public class MemberService {
             conn.setRequestMethod("POST"); //GET또는 POST로 가능
             conn.setDoOutput(true);
             conn.setRequestProperty("Authorization", "Bearer " + kakaoToken); //카카오 문서대로 헤더 달기(난 어드민 키 말고 액세스 토큰 사용!)
-
+            //TODO : 민영이 폰 바꿔서 회원가입 안되던 에러... 여기쯤서 문제됐던 걸지도
+            
+            
             //응답 결과 200이면 성공
             int responseCode = conn.getResponseCode();
             System.out.println("responseCode : " + responseCode);

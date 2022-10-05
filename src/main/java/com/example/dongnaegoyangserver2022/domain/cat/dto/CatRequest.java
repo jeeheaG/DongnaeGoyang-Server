@@ -14,7 +14,7 @@ public class CatRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     @Data //Equivalent to @Getter @Setter @RequiredArgsConstructor @ToString @EqualsAndHashCode
-    public static class CreateCatRequest {
+    public static class CreateCatRequest { //update 시에도 사용함
 
 //        @Autowired
 //        private ModelMapper modelMapper;
@@ -25,12 +25,12 @@ public class CatRequest {
         private int ear;
         private int tail;
         private int whisker;
+        private String oftenSeen;
         private String sex;
         private String age;
         private String note;
         private String sido;
         private String gugun;
-        private String oftenSeen;
         private String tnr = null;
         private String feed = null;
         private List<String> photoList = null;

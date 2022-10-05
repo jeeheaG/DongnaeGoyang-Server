@@ -3,6 +3,7 @@ package com.example.dongnaegoyangserver2022.domain.image.application;
 import com.example.dongnaegoyangserver2022.domain.cat.domain.Cat;
 import com.example.dongnaegoyangserver2022.domain.image.dao.ImageRepository;
 import com.example.dongnaegoyangserver2022.domain.image.domain.Image;
+import com.example.dongnaegoyangserver2022.domain.image.dto.ImageResponse;
 import com.example.dongnaegoyangserver2022.domain.image.model.ImageServiceModel;
 import com.example.dongnaegoyangserver2022.domain.image.model.ImageServiceModel.*;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,4 +28,9 @@ public class ImageService {
     public List<Image> getImageList(Cat cat) {
         return imageRepository.findByCat(cat);
     }
+
+//    public List<ImageResponse.ImageSimpleResponse> getImageList(Cat cat) {
+//        return imageRepository.findByCat(cat)
+//                .stream().map(image -> image.toImageSimpleResponse()).collect(Collectors.toList());
+//    }
 }

@@ -70,7 +70,14 @@ public class CatController {
         return ResponseEntity.ok(new JsonResponse(200, "success getCatDetailAdditional", catDetailAdditionalResponse));
     }
 
-
+    @PatchMapping("/v1/cats/{catIdx}")
+    public ResponseEntity<Object> updateCat(HttpServletRequest servletRequest,
+                                            @RequestBody CatRequest.CreateCatRequest request) {
+        log.info("[API] updateCat");
+        Member member = memberService.getMemberByHeader(servletRequest);
+        Long catIdx = catService.updateCat(member, request.toCatServiceModel());
+        return ResponseEntity.ok(new JsonResponse(200, "success updateCat", catIdx));
+    }
 
     @GetMapping("/v1/cats/hello")
     public ResponseEntity<Object> hello() {

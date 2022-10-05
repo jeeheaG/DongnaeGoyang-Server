@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -56,8 +57,10 @@ public class CatService {
         Page<Cat> catPaged = catRepository.findBySidoAndGugun(pageable, member.getSido(), member.getGugun()); //그냥 바로 List로 받아도 됨
 
         List<Cat> content = catPaged.getContent();
-
-        return Cat.toCatListResponseContainer(content);
+        List<CatResponse.CatListResponse> catListResponses = content.stream().map(cat -> cat.toCatListResponse()).collect(Collectors.toList());
+        return CatResponse.CatListResponseContainer.builder()
+                .catList(catListResponses)
+                .build();
     }
 
     public CatResponse.CatDetailResponse getCatDetail(Long kakaoId, Long catIdx){
@@ -87,6 +90,26 @@ public class CatService {
 
         return cat.toCatDetailAdditionalResponse(imageService.getImageList(cat), otherCatList);
     }
+
+    public Long updateCat(Member member, CreateCatModel model){
+//        log.info("[addCat] model: "+model); //잘 됨
+        //cat을 만들고 member를 가져옴
+        Cat cat = model.toEntity();
+
+        //cat에 member와 isPhoto를 설정함
+        cat.setIsPhoto(model.getPhotoList());
+
+        Long catIdx = catRepository.save(cat).getCatIdx();
+
+        //image
+        if(cat.isPhoto()) {
+            ImageServiceModel.CreateImageModel imageModel = new ImageServiceModel.CreateImageModel(model.getPhotoList(), cat);
+            imageService.createImage(imageModel);
+        }
+
+        return catIdx;
+    }
+
 
     //-- function --//
     private Cat getCatByIdx(Long catIdx){

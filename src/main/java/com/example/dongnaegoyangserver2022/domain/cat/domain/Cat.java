@@ -12,6 +12,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter //ModelMapper 사용에 필요
@@ -88,23 +89,24 @@ public class Cat extends BaseTimeEntity {
 
 
     //-- response DTO 변환 메서드 --//
-    public static CatResponse.CatListResponseContainer toCatListResponseContainer(List<Cat> catList) {
-        ArrayList<CatResponse.CatListResponse> catListResponses = new ArrayList<>();
-        for(Cat cat : catList) {
-            catListResponses.add(cat.toCatListResponse());
-        }
-        return CatResponse.CatListResponseContainer.builder()
-                .catList(catListResponses)
-                .build();
-    }
+//    public static CatResponse.CatListResponseContainer toCatListResponseContainer(List<Cat> catList) {
+//        ArrayList<CatResponse.CatListResponse> catListResponses = new ArrayList<>();
+//        for(Cat cat : catList) {
+//            catListResponses.add(cat.toCatListResponse());
+//        }
+//        return CatResponse.CatListResponseContainer.builder()
+//                .catList(catListResponses)
+//                .build();
+//    }
 
-    public static List<CatResponse.OtherCatResponse> toOtherCatResponse(List<Cat> catList) {
-        ArrayList<CatResponse.OtherCatResponse> otherCatResponses = new ArrayList<>();
-        for(Cat cat : catList) {
-            otherCatResponses.add(ModelMapperUtil.getModelMapper().map(cat, CatResponse.OtherCatResponse.class));
-        }
-        return otherCatResponses;
-    }
+//    public List<CatResponse.OtherCatResponse> toOtherCatResponse(List<Cat> catList) {
+//        ArrayList<CatResponse.OtherCatResponse> otherCatResponses = new ArrayList<>();
+//        for(Cat cat : catList) {
+//            otherCatResponses.add(ModelMapperUtil.getModelMapper().map(cat, CatResponse.OtherCatResponse.class));
+//        }
+//        return otherCatResponses;
+//    }
+
 
     public CatResponse.CatListResponse toCatListResponse() {
         return CatResponse.CatListResponse.builder()
@@ -161,6 +163,15 @@ public class Cat extends BaseTimeEntity {
     }
 
     //-- function --//
+
+     public List<CatResponse.OtherCatResponse> toOtherCatResponse(List<Cat> catList) {
+         return catList
+                 .stream().map(cat ->
+                         ModelMapperUtil.getModelMapper().map(cat, CatResponse.OtherCatResponse.class)
+                 )
+                 .collect(Collectors.toList());
+    }
+
     private int countHealthInfo() {
         int count = 0;
         if(this.tnr != null) {

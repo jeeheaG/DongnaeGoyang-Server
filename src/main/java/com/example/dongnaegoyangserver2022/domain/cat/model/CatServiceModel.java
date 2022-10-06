@@ -5,6 +5,7 @@ import com.example.dongnaegoyangserver2022.global.common.ModelMapperUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
@@ -57,4 +58,15 @@ public class CatServiceModel {
         private List<Long> deletePhotoList = null;
         private List<String> createPhotoList = null;
     }
+
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    public static class GetCatListModel {
+        private String sido;
+        private String gugun;
+        private PageRequest pageRequest;
+    }
+
 }

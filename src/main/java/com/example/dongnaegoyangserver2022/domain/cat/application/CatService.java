@@ -51,8 +51,8 @@ public class CatService {
         return catIdx;
     }
 
-    public CatResponse.CatListResponseContainer getCatList(Member member, Pageable pageable){
-        Page<Cat> catPaged = catRepository.findBySidoAndGugun(pageable, member.getSido(), member.getGugun()); //그냥 바로 List로 받아도 됨
+    public CatResponse.CatListResponseContainer getCatList(GetCatListModel model, Pageable pageable){
+        Page<Cat> catPaged = catRepository.findBySidoAndGugun(pageable, model.getSido(), model.getGugun()); //그냥 바로 List로 받아도 됨
 
         List<Cat> content = catPaged.getContent();
         List<CatResponse.CatListResponse> catListResponses = content.stream().map(cat -> cat.toCatListResponse()).collect(Collectors.toList());

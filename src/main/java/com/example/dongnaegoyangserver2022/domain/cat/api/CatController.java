@@ -3,6 +3,7 @@ package com.example.dongnaegoyangserver2022.domain.cat.api;
 import com.example.dongnaegoyangserver2022.domain.cat.application.CatService;
 import com.example.dongnaegoyangserver2022.domain.cat.dto.CatRequest;
 import com.example.dongnaegoyangserver2022.domain.cat.dto.CatResponse;
+import com.example.dongnaegoyangserver2022.domain.cat.model.CatServiceModel;
 import com.example.dongnaegoyangserver2022.domain.member.application.MemberService;
 import com.example.dongnaegoyangserver2022.domain.member.domain.Member;
 import com.example.dongnaegoyangserver2022.global.common.JsonResponse;
@@ -39,11 +40,12 @@ public class CatController {
     }
 
     @GetMapping("/v1/cats")
-    public ResponseEntity<Object> getCatList(HttpServletRequest servletRequest, @RequestParam int page) { //TODO : member필요없음. body에서 주소 가져오도록 수정할 것
+    public ResponseEntity<Object> getCatList(@RequestBody CatRequest.GetCatListRequest request,
+                                             @RequestParam int page) { //TODO : member필요없음. body에서 주소 가져오도록 수정할 것
         log.info("[API] getCatList");
-        Member member = memberService.getMemberByHeader(servletRequest);
         PageRequest pageRequest = PageRequest.of(page, 20); // Pageable : page와 size
-        CatResponse.CatListResponseContainer catListResponseContainer = catService.getCatList(member, pageRequest);
+        CatServiceModel.GetCatListModel model = request.toCatServiceModel(pageRequest);
+        CatResponse.CatListResponseContainer catListResponseContainer = catService.getCatList(model, pageRequest);
         return ResponseEntity.ok(new JsonResponse(200, "success getCatList", catListResponseContainer));
     }
 

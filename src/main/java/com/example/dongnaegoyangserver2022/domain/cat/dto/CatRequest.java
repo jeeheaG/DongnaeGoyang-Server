@@ -5,6 +5,7 @@ import com.example.dongnaegoyangserver2022.global.common.ModelMapperUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
@@ -69,6 +70,21 @@ public class CatRequest {
             return model;
         }
 
+    }
+
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    public static class GetCatListRequest {
+        private String sido;
+        private String gugun;
+
+        public CatServiceModel.GetCatListModel toCatServiceModel(PageRequest pageRequest) {
+            CatServiceModel.GetCatListModel model = ModelMapperUtil.getModelMapper().map(this, CatServiceModel.GetCatListModel.class);
+            model.setPageRequest(pageRequest);
+            return model;
+        }
     }
 
 

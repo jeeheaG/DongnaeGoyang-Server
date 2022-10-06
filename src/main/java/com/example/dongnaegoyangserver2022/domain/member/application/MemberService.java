@@ -39,8 +39,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     public Member getMemberByHeader(HttpServletRequest servletRequest) {
-        String token = jwtTokenProvider.resolveToken(servletRequest); //헤더에서 토큰 가져오기
-        Long kakaoId = Long.parseLong(jwtTokenProvider.getUserPK(token));
+        Long kakaoId = jwtTokenProvider.getUserPKByServlet(servletRequest);
 
         // DB확인하고 거절 or 토큰발급
         Optional<Member> memberOptional = memberRepository.findByKakaoId(kakaoId);
@@ -52,14 +51,12 @@ public class MemberService {
         return memberOptional.get();
     }
 
-    public String checkTokenInfo(HttpServletRequest httpServletRequest){
-        String token = jwtTokenProvider.resolveToken(httpServletRequest); //헤더에서 토큰 가져오기
+    public String checkTokenInfo(HttpServletRequest ServletRequest){
+        Long kakaoId = jwtTokenProvider.getUserPKByServlet(ServletRequest);
+//        String auth = jwtTokenProvider.getAuthentication(token).toString();
+        boolean valid = jwtTokenProvider.validateTokenByServlet(ServletRequest);
 
-        String kakaoId = jwtTokenProvider.getUserPK(token);
-        String auth = jwtTokenProvider.getAuthentication(token).toString();
-        boolean valid = jwtTokenProvider.validateToken(token);
-
-        return "kakaoId : "+kakaoId+" / auth : "+auth+" / valid : "+valid;
+        return "kakaoId : "+kakaoId+" / valid : "+valid;
     }
 
     public MemberResponse.LoginResponse login(HttpServletRequest httpServletRequest, MemberRequest.LoginRequest request){
@@ -155,9 +152,8 @@ public class MemberService {
         return memberRepository.save(newMember).getMemberIdx(); //save 하고 바로 Idx값 구하기
     }
 
-    public String refreshToken(HttpServletRequest httpServletRequest){
-        String oldToken = jwtTokenProvider.resolveToken(httpServletRequest);
-        Long kakaoId = Long.parseLong(jwtTokenProvider.getUserPK(oldToken));
+    public String refreshToken(HttpServletRequest servletRequest){
+        Long kakaoId = jwtTokenProvider.getUserPKByServlet(servletRequest);
 
         Optional<Member> memberOptional = memberRepository.findByKakaoId(kakaoId);
         if(memberOptional.isEmpty()){

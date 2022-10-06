@@ -66,8 +66,7 @@ public class CatService {
 
         log.info("[getCatDetail] cat : "+cat);
 
-        Member writer = cat.getMember();
-        List<Cat> otherCatList = catRepository.findOther5BySidoAndGugunRandom(writer.getSido(), writer.getGugun(), cat.getCatIdx());
+        List<Cat> otherCatList = catRepository.findOther5BySidoAndGugunRandom(cat.getSido(), cat.getGugun(), cat.getCatIdx());
 
         return cat.toCatDetailResponse(kakaoId, imageService.getImageList(cat), otherCatList);
     }
@@ -83,8 +82,7 @@ public class CatService {
         Cat cat = getCatByIdx(catIdx);
         log.info("[getCatDetailAdditional] cat : "+cat);
 
-        Member owner = cat.getMember();
-        List<Cat> otherCatList = catRepository.findOther5BySidoAndGugunRandom(owner.getSido(), owner.getGugun(), cat.getCatIdx());
+        List<Cat> otherCatList = catRepository.findOther5BySidoAndGugunRandom(cat.getSido(), cat.getGugun(), cat.getCatIdx());
 
         return cat.toCatDetailAdditionalResponse(imageService.getImageList(cat), otherCatList);
     }

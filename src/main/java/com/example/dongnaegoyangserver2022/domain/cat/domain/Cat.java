@@ -55,7 +55,7 @@ public class Cat extends BaseTimeEntity {
     private String oftenSeen;
 
     @Column(length = 100, nullable = false)
-    private int sex;
+    private String sex;
 
     @Column(length = 100, nullable = false)
     private String age;
@@ -124,7 +124,13 @@ public class Cat extends BaseTimeEntity {
         CatResponse.CatDetailResponse catDetailResponse = ModelMapperUtil.getModelMapper().map(this, CatResponse.CatDetailResponse.class);
 
         catDetailResponse.setHealthInfoCount(countHealthInfo());
-        catDetailResponse.setIsWriter(this.member.getKakaoId().equals(kakaoId));
+
+        if(kakaoId == null){ //비회원 처리
+            catDetailResponse.setIsWriter(false);
+        }else {
+            catDetailResponse.setIsWriter(this.member.getKakaoId().equals(kakaoId));
+        }
+
         catDetailResponse.setPlace(this.sido + " " + this.gugun);
         catDetailResponse.setAppearance(toCatAppearance());
         catDetailResponse.setPhotoList(imageList.stream().map(image -> image.toStringSimpleResponse()).collect(Collectors.toList()));
@@ -137,7 +143,12 @@ public class Cat extends BaseTimeEntity {
     public CatResponse.CatDetailBasicResponse toCatDetailBasicResponse(Long kakaoId) {
         CatResponse.CatDetailBasicResponse catDetailBasicResponse = ModelMapperUtil.getModelMapper().map(this, CatResponse.CatDetailBasicResponse.class);
 
-        catDetailBasicResponse.setIsWriter(this.member.getKakaoId().equals(kakaoId));
+        if(kakaoId == null){ //비회원 처리
+            catDetailBasicResponse.setIsWriter(false);
+        }else {
+            catDetailBasicResponse.setIsWriter(this.member.getKakaoId().equals(kakaoId));
+        }
+
         catDetailBasicResponse.setPlace(this.sido + " " + this.gugun);
         catDetailBasicResponse.setAppearance(toCatAppearance());
 

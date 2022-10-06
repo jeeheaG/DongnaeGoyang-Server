@@ -6,6 +6,8 @@ import com.example.dongnaegoyangserver2022.domain.cat.dto.CatResponse;
 import com.example.dongnaegoyangserver2022.domain.member.application.MemberService;
 import com.example.dongnaegoyangserver2022.domain.member.domain.Member;
 import com.example.dongnaegoyangserver2022.global.common.JsonResponse;
+import com.example.dongnaegoyangserver2022.global.config.exception.RestApiException;
+import com.example.dongnaegoyangserver2022.global.config.exception.error.MemberErrorCode;
 import com.example.dongnaegoyangserver2022.global.config.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +39,7 @@ public class CatController {
     }
 
     @GetMapping("/v1/cats")
-    public ResponseEntity<Object> getCatList(HttpServletRequest servletRequest, @RequestParam int page) {
+    public ResponseEntity<Object> getCatList(HttpServletRequest servletRequest, @RequestParam int page) { //TODO : member필요없음. body에서 주소 가져오도록 수정할 것
         log.info("[API] getCatList");
         Member member = memberService.getMemberByHeader(servletRequest);
         PageRequest pageRequest = PageRequest.of(page, 20); // Pageable : page와 size
@@ -48,8 +50,7 @@ public class CatController {
     @GetMapping("/v1/cats/{catIdx}")
     public ResponseEntity<Object> getCatDetail(HttpServletRequest servletRequest, @PathVariable Long catIdx) {
         log.info("[API] getCatDetail");
-        String token = jwtTokenProvider.resolveToken(servletRequest); //헤더에서 토큰 가져오기
-        Long kakaoId = Long.parseLong(jwtTokenProvider.getUserPK(token));
+        Long kakaoId = jwtTokenProvider.getUserPKByServlet(servletRequest);
         CatResponse.CatDetailResponse catDetailResponse = catService.getCatDetail(kakaoId, catIdx);
         return ResponseEntity.ok(new JsonResponse(200, "success getCatDetail", catDetailResponse));
     }
@@ -57,8 +58,7 @@ public class CatController {
     @GetMapping("/v1/cats/{catIdx}/basic-info")
     public ResponseEntity<Object> getCatDetailBasic(HttpServletRequest servletRequest, @PathVariable Long catIdx) {
         log.info("[API] getCatDetailBasic");
-        String token = jwtTokenProvider.resolveToken(servletRequest); //헤더에서 토큰 가져오기
-        Long kakaoId = Long.parseLong(jwtTokenProvider.getUserPK(token));
+        Long kakaoId = jwtTokenProvider.getUserPKByServlet(servletRequest);
         CatResponse.CatDetailBasicResponse catDetailBasicResponse = catService.getCatDetailBasic(kakaoId, catIdx);
         return ResponseEntity.ok(new JsonResponse(200, "success getCatDetailBasic", catDetailBasicResponse));
     }

@@ -20,14 +20,11 @@ public class JwtAuthenticationFilter extends GenericFilterBean { //GenericFilter
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-        //Header에서 토큰 받아오기
-        String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
-
         //토큰 유효 여부 확인
-        if(token != null && jwtTokenProvider.validateToken(token)) {
+        if(jwtTokenProvider.validateTokenByServlet((HttpServletRequest) request)) {
             //유효함.
             // 토큰에서 유저정보(Authentication) 받아옴
-            Authentication authentication = jwtTokenProvider.getAuthentication(token);
+            Authentication authentication = jwtTokenProvider.getAuthenticationByServlet((HttpServletRequest) request);
             // SecurityContext에 Authentication 객체를 저장함
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

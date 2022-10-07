@@ -44,7 +44,7 @@ public class MemberService {
         // DB확인하고 거절 or 토큰발급
         Optional<Member> memberOptional = memberRepository.findByKakaoId(kakaoId);
         if(memberOptional.isEmpty()){
-            System.out.println("No member, kakao id : "+ kakaoId);
+            log.info("[REJECT] getMemberByHeader : No member of kakao id = "+ kakaoId);
             throw new RestApiException(MemberErrorCode.NOT_EXIST_KAKAO_MEMBER);
         }
 

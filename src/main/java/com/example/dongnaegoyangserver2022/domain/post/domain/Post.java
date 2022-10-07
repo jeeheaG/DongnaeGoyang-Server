@@ -3,16 +3,13 @@ package com.example.dongnaegoyangserver2022.domain.post.domain;
 import com.example.dongnaegoyangserver2022.domain.cat.domain.Cat;
 import com.example.dongnaegoyangserver2022.domain.member.domain.Member;
 import com.example.dongnaegoyangserver2022.global.common.BaseTimeEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
-//@Setter
+@Setter
 //@DynamicUpdate
 @Builder
 @AllArgsConstructor

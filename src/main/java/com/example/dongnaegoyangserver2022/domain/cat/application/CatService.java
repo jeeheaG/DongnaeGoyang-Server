@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -31,7 +32,22 @@ public class CatService {
     @Autowired
     private ImageService imageService;
 
+    public Cat getCatByIdx(Long catIdx){
+        log.info("[SERVICE] getCatByIdx");
+        Cat cat = null;
+        try {
+            cat = findCatByIdx(catIdx);
+        }catch (RestApiException e){
+            if(e.getErrorCode() == CommonErrorCode.RESOURCE_NOT_FOUND){
+                log.info("[REJECT] getCatByIdx : No cat of catIdx = "+ catIdx);
+                throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND_URL);
+            }
+        }
+        return cat;
+    }
+
     public Long addCat(Member member, CreateCatModel model){
+        log.info("[SERVICE] addCat");
 //        log.info("[addCat] model: "+model); //잘 됨
         //cat을 만들고 member를 가져옴
         Cat cat = model.toEntity();
@@ -52,6 +68,7 @@ public class CatService {
     }
 
     public CatResponse.CatListResponseContainer getCatList(GetCatListModel model, Pageable pageable){
+        log.info("[SERVICE] getCatList");
         Page<Cat> catPaged = catRepository.findBySidoAndGugun(pageable, model.getSido(), model.getGugun()); //그냥 바로 List로 받아도 됨
 
         List<Cat> content = catPaged.getContent();
@@ -62,7 +79,8 @@ public class CatService {
     }
 
     public CatResponse.CatDetailResponse getCatDetail(Long kakaoId, Long catIdx){
-        Cat cat = getCatByIdx(catIdx);
+        log.info("[SERVICE] getCatDetail");
+        Cat cat = findCatByIdx(catIdx);
 
         log.info("[getCatDetail] cat : "+cat);
 
@@ -72,14 +90,16 @@ public class CatService {
     }
 
     public CatResponse.CatDetailBasicResponse getCatDetailBasic(Long kakaoId, Long catIdx){
-        Cat cat = getCatByIdx(catIdx);
+        log.info("[SERVICE] getCatDetailBasic");
+        Cat cat = findCatByIdx(catIdx);
         log.info("[getCatDetailBasic] cat : "+cat);
 
         return cat.toCatDetailBasicResponse(kakaoId);
     }
 
     public CatResponse.CatDetailAdditionalResponse getCatDetailAdditional(Long catIdx){
-        Cat cat = getCatByIdx(catIdx);
+        log.info("[SERVICE] getCatDetailAdditional");
+        Cat cat = findCatByIdx(catIdx);
         log.info("[getCatDetailAdditional] cat : "+cat);
 
         List<Cat> otherCatList = catRepository.findOther5BySidoAndGugunRandom(cat.getSido(), cat.getGugun(), cat.getCatIdx());
@@ -88,7 +108,8 @@ public class CatService {
     }
 
     public Long updateCat(Member member, Long catIdx, UpdateCatModel model){
-        Cat cat = getCatByIdx(catIdx);
+        log.info("[SERVICE] updateCat");
+        Cat cat = findCatByIdx(catIdx);
 
         if(member != cat.getMember()){
             throw new RestApiException(MemberErrorCode.MEMBER_FORBIDDEN);
@@ -119,7 +140,8 @@ public class CatService {
     }
 
     //-- function --//
-    private Cat getCatByIdx(Long catIdx){
+    private Cat findCatByIdx(Long catIdx) throws RestApiException {
+        log.info("[METHOD] findCatByIdx");
         return catRepository.findById(catIdx)
                 .orElseThrow(() -> new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND));
     }

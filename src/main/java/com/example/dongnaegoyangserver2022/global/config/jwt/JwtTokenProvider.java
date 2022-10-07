@@ -54,6 +54,8 @@ public class JwtTokenProvider {
         // TODO : 이거 사용하는 곳들 수정하기.. memberRepository로부터의 Member 조회는 MemberService에서만 하도록 해야하는데 와전 깊숙한 도메인영역까지 끌고 들어간 듯
         //  이거 대신 MemberService의 getMemberByHeader사용하도록 수정하기
         //  -> 아닌가......이게 맞네 아 비회원 지대 헷갈려....... 토큰kakaoId랑 Member를 따로 생각하면 괜찮은 것 같기도 하고...
+        //  이것도 쓰도록 하는(kakaoId를 깊숙한 곳에서 직접 사용) 게 맞는 것 같아... 이게 꼭 select쿼리를 한번 더 보내야하는 상황이 아니라면 이게 효울적이지
+        //  개발자는 유연하게 사고한다!!!!! 정답은 없다!
         String token = "";
         try {
             token = resolveToken(httpServletRequest);

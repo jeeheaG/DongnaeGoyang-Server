@@ -38,10 +38,15 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    public Member getMemberByHeader(HttpServletRequest servletRequest) {
+    public Member getMemberByHeader(HttpServletRequest servletRequest) throws RestApiException {
         Long kakaoId = jwtTokenProvider.getUserPKByServlet(servletRequest);
+        if(kakaoId == null){
+            //비회원
+            log.info("[REJECT] getMemberByHeader");
+            throw new RestApiException(MemberErrorCode.GUEST_USER);
+        }
 
-        // DB확인하고 거절 or 토큰발급
+        // DB확인
         Optional<Member> memberOptional = memberRepository.findByKakaoId(kakaoId);
         if(memberOptional.isEmpty()){
             log.info("[REJECT] getMemberByHeader : No member of kakao id = "+ kakaoId);
@@ -53,7 +58,11 @@ public class MemberService {
 
     public String checkTokenInfo(HttpServletRequest ServletRequest){
         Long kakaoId = jwtTokenProvider.getUserPKByServlet(ServletRequest);
-//        String auth = jwtTokenProvider.getAuthentication(token).toString();
+        if(kakaoId == null){
+            log.info("[REJECT] checkTokenInfo");
+            throw new RestApiException(MemberErrorCode.GUEST_USER);
+        }
+
         boolean valid = jwtTokenProvider.validateTokenByServlet(ServletRequest);
 
         return "kakaoId : "+kakaoId+" / valid : "+valid;

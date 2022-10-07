@@ -43,6 +43,4 @@ public class PostController {
 
         return ResponseEntity.ok(new JsonResponse(201, "success createPost", postIdx));
     }
-
-
 }

@@ -4,8 +4,9 @@ import lombok.Data;
 
 public class ImageResponse {
 
-//    @Data
-//    public static class ImageSimpleResponse{
-//        private String image;
-//    }
+    @Data
+    public static class ImageSimpleResponse{
+        private Long imageIdx;
+        private String url;
+    }
 }

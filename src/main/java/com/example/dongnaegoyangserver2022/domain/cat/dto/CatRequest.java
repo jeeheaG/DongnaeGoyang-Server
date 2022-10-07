@@ -5,6 +5,7 @@ import com.example.dongnaegoyangserver2022.global.common.ModelMapperUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
@@ -25,12 +26,12 @@ public class CatRequest {
         private int ear;
         private int tail;
         private int whisker;
+        private String oftenSeen;
         private String sex;
         private String age;
         private String note;
         private String sido;
         private String gugun;
-        private String oftenSeen;
         private String tnr = null;
         private String feed = null;
         private List<String> photoList = null;
@@ -40,6 +41,50 @@ public class CatRequest {
             return model;
         }
 
+    }
+
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    public static class UpdateCatRequest {
+        private String name = null;
+        private Integer color = null;
+        private Integer size = null;
+        private Integer ear = null;
+        private Integer tail = null;
+        private Integer whisker = null;
+        private String oftenSeen = null;
+        private String sex = null;
+        private String age = null;
+        private String note = null;
+        private String sido = null;
+        private String gugun = null;
+        private String tnr = null;
+        private String feed = null;
+        private List<Long> deletePhotoList = null;
+        private List<String> createPhotoList = null;
+
+        public CatServiceModel.UpdateCatModel toCatServiceModel() {
+            CatServiceModel.UpdateCatModel model = ModelMapperUtil.getModelMapper().map(this, CatServiceModel.UpdateCatModel.class);
+            return model;
+        }
+
+    }
+
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    public static class GetCatListRequest {
+        private String sido;
+        private String gugun;
+
+        public CatServiceModel.GetCatListModel toCatServiceModel(PageRequest pageRequest) {
+            CatServiceModel.GetCatListModel model = ModelMapperUtil.getModelMapper().map(this, CatServiceModel.GetCatListModel.class);
+            model.setPageRequest(pageRequest);
+            return model;
+        }
     }
 
 

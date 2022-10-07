@@ -25,4 +25,18 @@ public class MemberResponse {
         private Long kakaoId;
         private String nickname;
     }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    public static class MemberTownResponse{
+        private String sido;
+        private String gugun;
+    }
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    public static class MemberNicknameResponse{
+        private String nickname;
+    }
 }

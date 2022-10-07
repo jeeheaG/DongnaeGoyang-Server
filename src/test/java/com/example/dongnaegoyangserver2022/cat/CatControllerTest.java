@@ -1,3 +1,4 @@
+/*
 package com.example.dongnaegoyangserver2022.cat;
 
 import com.example.dongnaegoyangserver2022.domain.cat.api.CatController;
@@ -63,3 +64,4 @@ public class CatControllerTest {
                 .andExpect(status().is4xxClientError());
     }
 }
+*/

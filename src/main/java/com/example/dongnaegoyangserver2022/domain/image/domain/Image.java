@@ -1,7 +1,11 @@
 package com.example.dongnaegoyangserver2022.domain.image.domain;
 
 import com.example.dongnaegoyangserver2022.domain.cat.domain.Cat;
+import com.example.dongnaegoyangserver2022.domain.image.dto.ImageResponse;
+import com.example.dongnaegoyangserver2022.global.common.ModelMapperUtil;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -25,13 +29,10 @@ public class Image {
 
     @JoinColumn(name = "cat_idx", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Cat cat;
 
-    public static List<String> toStringList(List<Image> imageList) {
-        ArrayList<String> imageStringList = new ArrayList<>();
-        for(Image image : imageList){
-            imageStringList.add(image.url);
-        }
-        return imageStringList;
+    public ImageResponse.ImageSimpleResponse toStringSimpleResponse() {
+        return ModelMapperUtil.getModelMapper().map(this, ImageResponse.ImageSimpleResponse.class);
     }
 }

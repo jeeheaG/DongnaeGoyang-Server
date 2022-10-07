@@ -6,22 +6,22 @@ import com.example.dongnaegoyangserver2022.domain.cat.dto.CatResponse;
 import com.example.dongnaegoyangserver2022.domain.cat.model.CatServiceModel.*;
 import com.example.dongnaegoyangserver2022.domain.image.application.ImageService;
 import com.example.dongnaegoyangserver2022.domain.image.model.ImageServiceModel;
-import com.example.dongnaegoyangserver2022.domain.member.application.MemberService;
 import com.example.dongnaegoyangserver2022.domain.member.domain.Member;
+import com.example.dongnaegoyangserver2022.global.common.ModelMapperUtil;
 import com.example.dongnaegoyangserver2022.global.config.exception.RestApiException;
 import com.example.dongnaegoyangserver2022.global.config.exception.error.CommonErrorCode;
+import com.example.dongnaegoyangserver2022.global.config.exception.error.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -32,7 +32,22 @@ public class CatService {
     @Autowired
     private ImageService imageService;
 
+    public Cat getCatByIdx(Long catIdx){
+        log.info("[SERVICE] getCatByIdx");
+        Cat cat = null;
+        try {
+            cat = findCatByIdx(catIdx);
+        }catch (RestApiException e){
+            if(e.getErrorCode() == CommonErrorCode.RESOURCE_NOT_FOUND){
+                log.info("[REJECT] getCatByIdx : No cat of catIdx = "+ catIdx);
+                throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND_URL);
+            }
+        }
+        return cat;
+    }
+
     public Long addCat(Member member, CreateCatModel model){
+        log.info("[SERVICE] addCat");
 //        log.info("[addCat] model: "+model); //잘 됨
         //cat을 만들고 member를 가져옴
         Cat cat = model.toEntity();
@@ -46,33 +61,94 @@ public class CatService {
         //image
         if(cat.isPhoto()) {
             ImageServiceModel.CreateImageModel imageModel = new ImageServiceModel.CreateImageModel(model.getPhotoList(), cat);
-            imageService.createImage(imageModel);
+            imageService.createImages(imageModel);
         }
 
         return catIdx;
     }
 
-    public CatResponse.CatListResponseContainer getCatList(Member member, Pageable pageable){
-        Page<Cat> catPaged = catRepository.findBySidoAndGugun(pageable, member.getSido(), member.getGugun()); //그냥 바로 List로 받아도 됨
+    public CatResponse.CatListResponseContainer getCatList(GetCatListModel model, Pageable pageable){
+        log.info("[SERVICE] getCatList");
+        Page<Cat> catPaged = catRepository.findBySidoAndGugun(pageable, model.getSido(), model.getGugun()); //그냥 바로 List로 받아도 됨
 
         List<Cat> content = catPaged.getContent();
+        List<CatResponse.CatListResponse> catListResponses = content
+                .stream()
+                .map(cat ->
+                        cat.toCatListResponse())
+                .collect(Collectors.toList());
 
-        return Cat.toCatListResponseContainer(content);
+        return CatResponse.CatListResponseContainer.builder()
+                .catList(catListResponses)
+                .build();
     }
 
-    public CatResponse.CatDetailResponse getCatDetail(Long catIdx){
-        Cat cat = catRepository.findById(catIdx)
-                .orElseThrow(() -> new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND));
+    public CatResponse.CatDetailResponse getCatDetail(Long kakaoId, Long catIdx){
+        log.info("[SERVICE] getCatDetail");
+        Cat cat = findCatByIdx(catIdx);
 
         log.info("[getCatDetail] cat : "+cat);
 
-        Member owner = cat.getMember();
-        List<Cat> otherCatList = catRepository.findOther5BySidoAndGugunRandom(owner.getSido(), owner.getGugun(), cat.getCatIdx());
+        List<Cat> otherCatList = catRepository.findOther5BySidoAndGugunRandom(cat.getSido(), cat.getGugun(), cat.getCatIdx());
 
-        return cat.toCatDetailResponse(imageService.getImageList(cat), otherCatList);
+        return cat.toCatDetailResponse(kakaoId, imageService.getImageList(cat), otherCatList);
+    }
+
+    public CatResponse.CatDetailBasicResponse getCatDetailBasic(Long kakaoId, Long catIdx){
+        log.info("[SERVICE] getCatDetailBasic");
+        Cat cat = findCatByIdx(catIdx);
+        log.info("[getCatDetailBasic] cat : "+cat);
+
+        return cat.toCatDetailBasicResponse(kakaoId);
+    }
+
+    public CatResponse.CatDetailAdditionalResponse getCatDetailAdditional(Long catIdx){
+        log.info("[SERVICE] getCatDetailAdditional");
+        Cat cat = findCatByIdx(catIdx);
+        log.info("[getCatDetailAdditional] cat : "+cat);
+
+        List<Cat> otherCatList = catRepository.findOther5BySidoAndGugunRandom(cat.getSido(), cat.getGugun(), cat.getCatIdx());
+
+        return cat.toCatDetailAdditionalResponse(imageService.getImageList(cat), otherCatList);
+    }
+
+    public Long updateCat(Member member, Long catIdx, UpdateCatModel model){
+        log.info("[SERVICE] updateCat");
+        Cat cat = findCatByIdx(catIdx);
+
+        if(member != cat.getMember()){
+            throw new RestApiException(MemberErrorCode.MEMBER_FORBIDDEN);
+        }
+
+        ModelMapper mapper = ModelMapperUtil.getModelMapper();
+        ModelMapperUtil.setSkipNullEnabled(true);
+        mapper.map(model, cat);
+        ModelMapperUtil.setSkipNullEnabled(false);
+        // static이니까 다시 setSkipNullEnabled(false) 해줘야 하나???oo
+        // 원래 바디에 null로 하더라도 변수를 다 보내줬어야 했나.....? 아니 그게 아니라 원래 json안에 주석 못넣음........
+
+        //image
+        if(model.getCreatePhotoList() != null && !model.getCreatePhotoList().isEmpty()){
+            imageService.createImages(new ImageServiceModel.CreateImageModel(model.getCreatePhotoList(), cat));
+        }
+
+        if(model.getDeletePhotoList() != null && !model.getDeletePhotoList().isEmpty()){
+            imageService.deleteImages(model.getDeletePhotoList());
+        }
+
+        //isPhoto
+        if((model.getCreatePhotoList() != null && !model.getCreatePhotoList().isEmpty()) || (model.getDeletePhotoList() != null && !model.getDeletePhotoList().isEmpty())){
+            cat.setIsPhoto(!imageService.getImageList(cat).isEmpty());
+        }
+
+        return catRepository.save(cat).getCatIdx();
     }
 
     //-- function --//
-
+    private Cat findCatByIdx(Long catIdx) throws RestApiException {
+        log.info("[METHOD] findCatByIdx");
+        return catRepository.findById(catIdx)
+                .orElseThrow(() -> new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND));
+    }
 
 }

@@ -12,6 +12,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +26,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Optional;
 
-@Service
+@Slf4j
 @RequiredArgsConstructor
-public class MemberService {
+@Service
+public class MemberAuthService {
     // TODO : kakaoId 형변환 없이 전달 흐름 수정해보기, UserPK네이밍 바꾸기??
     // TODO : 추후 비즈니스 로직을 도메인으로 이동시키기
 
@@ -36,28 +38,38 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    public Member getMemberByHeader(HttpServletRequest servletRequest) {
-        String token = jwtTokenProvider.resolveToken(servletRequest); //헤더에서 토큰 가져오기
-        Long kakaoId = Long.parseLong(jwtTokenProvider.getUserPK(token));
+    public Member getMemberByHeader(HttpServletRequest servletRequest) throws RestApiException {
+        Long kakaoId = jwtTokenProvider.getUserPKByServlet(servletRequest);
+        if(kakaoId == null){
+            //비회원
+            log.info("[REJECT] getMemberByHeader");
+            throw new RestApiException(MemberErrorCode.GUEST_USER);
+        }
 
-        // DB확인하고 거절 or 토큰발급
+        // DB확인
         Optional<Member> memberOptional = memberRepository.findByKakaoId(kakaoId);
         if(memberOptional.isEmpty()){
-            System.out.println("No member, kakao id : "+ kakaoId);
+            log.info("[REJECT] getMemberByHeader : No member of kakao id = "+ kakaoId);
             throw new RestApiException(MemberErrorCode.NOT_EXIST_KAKAO_MEMBER);
         }
 
         return memberOptional.get();
     }
 
-    public String checkTokenInfo(HttpServletRequest httpServletRequest){
-        String token = jwtTokenProvider.resolveToken(httpServletRequest); //헤더에서 토큰 가져오기
+    public void deleteAccount(Member member){
+        memberRepository.delete(member);
+    }
 
-        String kakaoId = jwtTokenProvider.getUserPK(token);
-        String auth = jwtTokenProvider.getAuthentication(token).toString();
-        boolean valid = jwtTokenProvider.validateToken(token);
+    public String checkTokenInfo(HttpServletRequest servletRequest){
+        Long kakaoId = jwtTokenProvider.getUserPKByServlet(servletRequest);
+        if(kakaoId == null){
+            log.info("[REJECT] checkTokenInfo");
+            throw new RestApiException(MemberErrorCode.GUEST_USER);
+        }
 
-        return "kakaoId : "+kakaoId+" / auth : "+auth+" / valid : "+valid;
+        boolean valid = jwtTokenProvider.validateTokenByServlet(servletRequest);
+
+        return "kakaoId : "+kakaoId+" / valid : "+valid;
     }
 
     public MemberResponse.LoginResponse login(HttpServletRequest httpServletRequest, MemberRequest.LoginRequest request){
@@ -108,6 +120,7 @@ public class MemberService {
     }
 
     public Long addMember(HttpServletRequest httpServletRequest, MemberRequest.SignUpRequest request){
+        log.info("[SERVICE] addMember");
         String kakaoToken = httpServletRequest.getHeader("Authorization");
         HashMap<String, Object> resultMap = getKakaoInfo(kakaoToken, "signUp");
 
@@ -152,9 +165,8 @@ public class MemberService {
         return memberRepository.save(newMember).getMemberIdx(); //save 하고 바로 Idx값 구하기
     }
 
-    public String refreshToken(HttpServletRequest httpServletRequest){
-        String oldToken = jwtTokenProvider.resolveToken(httpServletRequest);
-        Long kakaoId = Long.parseLong(jwtTokenProvider.getUserPK(oldToken));
+    public String refreshToken(HttpServletRequest servletRequest){
+        Long kakaoId = jwtTokenProvider.getUserPKByServlet(servletRequest);
 
         Optional<Member> memberOptional = memberRepository.findByKakaoId(kakaoId);
         if(memberOptional.isEmpty()){
@@ -168,6 +180,8 @@ public class MemberService {
 
 
     private HashMap<String, Object> getKakaoInfo(String kakaoToken, String type) {
+        log.info("[METHOD] getKakaoInfo");
+
         HashMap<String, Object> resultMap = new HashMap<String, Object>();
         String requestUrl = "https://kapi.kakao.com/v2/user/me";
 
@@ -179,7 +193,9 @@ public class MemberService {
             conn.setRequestMethod("POST"); //GET또는 POST로 가능
             conn.setDoOutput(true);
             conn.setRequestProperty("Authorization", "Bearer " + kakaoToken); //카카오 문서대로 헤더 달기(난 어드민 키 말고 액세스 토큰 사용!)
-
+            //TODO : 민영이 폰 바꿔서 회원가입 안되던 에러... 여기쯤서 문제됐던 걸지도
+            
+            
             //응답 결과 200이면 성공
             int responseCode = conn.getResponseCode();
             System.out.println("responseCode : " + responseCode);

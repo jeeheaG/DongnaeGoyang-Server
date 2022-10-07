@@ -1,5 +1,6 @@
 package com.example.dongnaegoyangserver2022.domain.cat.dto;
 
+import com.example.dongnaegoyangserver2022.domain.image.dto.ImageResponse;
 import com.example.dongnaegoyangserver2022.domain.member.dto.MemberResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -48,6 +49,7 @@ public class CatResponse {
     @Data
     public static class CatDetailResponse {
         private Long catIdx;
+        private Boolean isWriter;
         private String name;
         private String sex;
         private String age;
@@ -55,11 +57,41 @@ public class CatResponse {
         private String oftenSeen;
         private String note;
         private CatAppearance appearance;
-        private List<String> photoList = null;
+        private List<ImageResponse.ImageSimpleResponse> photoList = null;
+        private int healthInfoCount;
         private String tnr = null;
         private String feed = null;
         private LocalDateTime modifiedTime;
-        private MemberResponse.MemberSimpleResponse user;
+        private MemberResponse.MemberSimpleResponse writer;
+        private List<OtherCatResponse> otherCatList;
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    public static class CatDetailBasicResponse {
+        private Long catIdx;
+        private Boolean isWriter;
+        private String name;
+        private String sex;
+        private String age;
+        private String place;
+        private String oftenSeen;
+        private String note;
+        private CatAppearance appearance;
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    public static class CatDetailAdditionalResponse {
+        private Long catIdx;
+        private List<ImageResponse.ImageSimpleResponse> photoList = null;
+        private int healthInfoCount;
+        private String tnr = null;
+        private String feed = null;
+        private LocalDateTime modifiedTime;
+        private MemberResponse.MemberSimpleResponse writer;
         private List<OtherCatResponse> otherCatList;
     }
 

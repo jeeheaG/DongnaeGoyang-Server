@@ -26,7 +26,7 @@ public class JwtTokenProvider {
     private String secretKey = "jhGoyang";
 
     //토큰 유효시간 : 7일
-    private long tokenValidTime = 7 * 24 * 60 * 60 * 1000L;
+    private final long tokenValidTime = 7 * 24 * 60 * 60 * 1000L;
 
     private final UserDetailsService userDetailsService;
 
@@ -49,31 +49,76 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    //토큰에서 회원 정보 추출
-    public String getUserPK(String token) {
-        String userPK = "";
+
+    public Long getUserPKByServlet(HttpServletRequest httpServletRequest) throws RestApiException {
+        // TODO : 이거 사용하는 곳들 수정하기.. memberRepository로부터의 Member 조회는 MemberService에서만 하도록 해야하는데 와전 깊숙한 도메인영역까지 끌고 들어간 듯
+        //  이거 대신 MemberService의 getMemberByHeader사용하도록 수정하기
+        //  -> 아닌가......이게 맞네 아 비회원 지대 헷갈려....... 토큰kakaoId랑 Member를 따로 생각하면 괜찮은 것 같기도 하고...
+        //  이것도 쓰도록 하는(kakaoId를 깊숙한 곳에서 직접 사용) 게 맞는 것 같아... 이게 꼭 select쿼리를 한번 더 보내야하는 상황이 아니라면 이게 효울적이지
+        //  개발자는 유연하게 사고한다!!!!! 정답은 없다!
+        String token = "";
         try {
-            userPK = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject(); //setSubject했던 값 가져오기
+            token = resolveToken(httpServletRequest);
+        }
+        catch (RestApiException apiException){
+            if(apiException.getErrorCode() == MemberErrorCode.GUEST_USER){
+                //비회원 사용자 처리
+                return null;
+            } else {
+                throw apiException;
+            }
+        }
+        return getUserPK(token);
+    }
+
+    public boolean validateTokenByServlet(HttpServletRequest httpServletRequest) throws RestApiException {
+        String token = "";
+        try {
+            token = resolveToken(httpServletRequest);
+        }
+        catch (RestApiException apiException){
+            if(apiException.getErrorCode() == MemberErrorCode.GUEST_USER){
+                //비회원 사용자 처리
+                return false;
+            } else {
+                throw apiException;
+            }
+        }
+        return validateToken(token);
+    }
+
+    //토큰에서 회원 정보 추출
+    private Long getUserPK(String token) {
+        long userPK;
+        try {
+            String userPKString = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject(); //setSubject했던 값 가져오기
+            userPK = Long.parseLong(userPKString);
         } catch (Exception e) {
-            System.out.println("INVALID_TOKEN");
             throw new RestApiException(MemberErrorCode.INVALID_TOKEN); //토큰에서 회원 정보를 확인할 수 없을 때 throw
         }
         return userPK;
     }
 
     //토큰에서 인증정보 조회
-    public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPK(token)); //토큰에서 회원정보 추출하는 getUserOK메서드 사용
+//    public Authentication getAuthentication(String token) {
+    public Authentication getAuthenticationByServlet(HttpServletRequest httpServletRequest) {
+        String token = resolveToken(httpServletRequest);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPK(token).toString()); //토큰에서 회원정보 추출하는 getUserOK메서드 사용
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
     //요청 Header에서 토큰 가져옴
-    public String resolveToken(HttpServletRequest httpServletRequest) {
-        return httpServletRequest.getHeader("X-AUTH-TOKEN");
+    private String resolveToken(HttpServletRequest httpServletRequest) {
+        String token = httpServletRequest.getHeader("X-AUTH-TOKEN");
+        if(token == null || token.isEmpty()){
+            //토큰이 비어있으면 비회원 사용으로 간주함
+            throw new RestApiException(MemberErrorCode.GUEST_USER);
+        }
+        return token;
     }
 
     //토큰의 비암호화와 만료일자로 유효 여부 확인 - true/false
-    public boolean validateToken(String token) {
+    private boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date()); //만료일시 지났는지로 유효여부 판단 (만료일시가 현재일시보다 전이면 false)

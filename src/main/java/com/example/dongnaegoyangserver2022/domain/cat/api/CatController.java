@@ -4,21 +4,17 @@ import com.example.dongnaegoyangserver2022.domain.cat.application.CatService;
 import com.example.dongnaegoyangserver2022.domain.cat.dto.CatRequest;
 import com.example.dongnaegoyangserver2022.domain.cat.dto.CatResponse;
 import com.example.dongnaegoyangserver2022.domain.cat.model.CatServiceModel;
-import com.example.dongnaegoyangserver2022.domain.member.application.MemberService;
+import com.example.dongnaegoyangserver2022.domain.member.application.MemberAuthService;
 import com.example.dongnaegoyangserver2022.domain.member.domain.Member;
 import com.example.dongnaegoyangserver2022.global.common.JsonResponse;
-import com.example.dongnaegoyangserver2022.global.config.exception.RestApiException;
-import com.example.dongnaegoyangserver2022.global.config.exception.error.MemberErrorCode;
 import com.example.dongnaegoyangserver2022.global.config.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -28,13 +24,13 @@ public class CatController {
     private final JwtTokenProvider jwtTokenProvider;
 
     private final CatService catService;
-    private final MemberService memberService;
+    private final MemberAuthService memberAuthService;
 
     @PostMapping("/v1/cats")
     public ResponseEntity<Object> createCat(HttpServletRequest servletRequest,
                                             @RequestBody CatRequest.CreateCatRequest request) {
         log.info("[API] createCat");
-        Member member = memberService.getMemberByHeader(servletRequest);
+        Member member = memberAuthService.getMemberByHeader(servletRequest);
         Long catIdx = catService.addCat(member, request.toCatServiceModel());
         return ResponseEntity.ok(new JsonResponse(201, "success createCat", catIdx));
     }
@@ -77,7 +73,7 @@ public class CatController {
                                             @PathVariable Long catIdx,
                                             @RequestBody CatRequest.UpdateCatRequest request) {
         log.info("[API] updateCat");
-        Member member = memberService.getMemberByHeader(servletRequest);
+        Member member = memberAuthService.getMemberByHeader(servletRequest);
         Long updatedCatIdx = catService.updateCat(member, catIdx, request.toCatServiceModel());
         return ResponseEntity.ok(new JsonResponse(200, "success updateCat", updatedCatIdx));
     }

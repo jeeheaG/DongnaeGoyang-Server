@@ -11,4 +11,19 @@ public class MemberServiceModel {
 //    @Data
 //    public static class MemberBasicModel{
 //    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    public static class MemberUpdateTownModel{
+        private String sido;
+        private String gugun;
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    public static class MemberUpdateNicknameModel{
+        private String nickname;
+    }
 }

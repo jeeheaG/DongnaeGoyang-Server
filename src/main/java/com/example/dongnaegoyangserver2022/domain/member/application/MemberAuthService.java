@@ -27,9 +27,9 @@ import java.util.HashMap;
 import java.util.Optional;
 
 @Slf4j
-@Service
 @RequiredArgsConstructor
-public class MemberService {
+@Service
+public class MemberAuthService {
     // TODO : kakaoId 형변환 없이 전달 흐름 수정해보기, UserPK네이밍 바꾸기??
     // TODO : 추후 비즈니스 로직을 도메인으로 이동시키기
 

@@ -41,4 +41,9 @@ public class Post extends BaseTimeEntity {
         getPostListResponse.setWriter(this.member.toMemberSimpleResponse());
         return getPostListResponse;
     }
+
+    //-- function --//
+    public boolean checkIsWriter(Long kakaoId){
+        return member.getKakaoId().equals(kakaoId);
+    }
 }

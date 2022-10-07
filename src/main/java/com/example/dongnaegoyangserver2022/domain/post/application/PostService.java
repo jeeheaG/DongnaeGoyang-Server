@@ -6,6 +6,8 @@ import com.example.dongnaegoyangserver2022.domain.post.dao.PostRepository;
 import com.example.dongnaegoyangserver2022.domain.post.domain.Post;
 import com.example.dongnaegoyangserver2022.domain.post.dto.PostResponse;
 import com.example.dongnaegoyangserver2022.domain.post.model.PostServiceModel;
+import com.example.dongnaegoyangserver2022.global.config.exception.RestApiException;
+import com.example.dongnaegoyangserver2022.global.config.exception.error.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -42,6 +45,22 @@ public class PostService {
         return PostResponse.GetPostListResponseContainer.builder()
                 .postList(postListResponses)
                 .build();
+    }
+
+    public void deletePost(Long kakaoId, Long postIdx){
+        Optional<Post> postOptional = postRepository.findById(postIdx);
+        if(postOptional.isEmpty()){
+            log.info("[REJECT] deletePost : No post is found by this postIdx = "+postIdx);
+        }
+        else{
+            Post post = postOptional.get();
+            if(post.checkIsWriter(kakaoId)){
+                postRepository.delete(post);
+            }
+            else{
+                throw new RestApiException(MemberErrorCode.MEMBER_FORBIDDEN);
+            }
+        }
     }
 
 }

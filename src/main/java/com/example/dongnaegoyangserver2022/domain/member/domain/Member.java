@@ -51,7 +51,23 @@ public class Member implements UserDetails { //NotNull인 게 하나도 없음..
         return ModelMapperUtil.getModelMapper().map(this, MemberResponse.MemberSimpleResponse.class);
     }
 
+    public MemberResponse.MemberTownResponse toMemberTownResponse(){
+        return ModelMapperUtil.getModelMapper().map(this, MemberResponse.MemberTownResponse.class);
+    }
 
+    public MemberResponse.MemberNicknameResponse toMemberNicknameResponse(){
+        return ModelMapperUtil.getModelMapper().map(this, MemberResponse.MemberNicknameResponse.class);
+    }
+
+    //-- function --//
+    public void updateMemberTown(String sido, String gugun){
+        this.sido = sido;
+        this.gugun = gugun;
+    }
+
+    public void updateMemberNickname(String nickname){
+        this.nickname = nickname;
+    }
     ////////////////////////////// implements UserDetails //////////////////////////////
 
     //TODO : ??? roles가 그래서 어디서 오는 거임??

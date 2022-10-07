@@ -77,6 +77,7 @@ public class CatService {
                 .map(cat ->
                         cat.toCatListResponse())
                 .collect(Collectors.toList());
+
         return CatResponse.CatListResponseContainer.builder()
                 .catList(catListResponses)
                 .build();

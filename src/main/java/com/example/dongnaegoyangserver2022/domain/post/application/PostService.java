@@ -32,11 +32,13 @@ public class PostService {
         log.info("[SERVICE] getPostList");
         Page<Post> postListPage = postRepository.findByCatIdxPageable(pageRequest, catIdx);
         List<Post> postList = postListPage.getContent();
+
         List<PostResponse.GetPostListResponse> postListResponses = postList
                 .stream()
                 .map(post ->
                         post.toGetPostListResponse(kakaoId))
                 .collect(Collectors.toList());
+
         return PostResponse.GetPostListResponseContainer.builder()
                 .postList(postListResponses)
                 .build();

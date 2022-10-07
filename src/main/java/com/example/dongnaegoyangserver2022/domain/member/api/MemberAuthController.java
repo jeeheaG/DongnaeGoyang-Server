@@ -1,5 +1,6 @@
 package com.example.dongnaegoyangserver2022.domain.member.api;
 
+import com.example.dongnaegoyangserver2022.domain.member.domain.Member;
 import com.example.dongnaegoyangserver2022.global.common.JsonResponse;
 import com.example.dongnaegoyangserver2022.domain.member.dto.MemberRequest;
 import com.example.dongnaegoyangserver2022.domain.member.dto.MemberResponse;
@@ -47,5 +48,14 @@ public class MemberAuthController {
         log.info("[API] refreshToken");
         String token = memberAuthService.refreshToken(httpServletRequest);
         return ResponseEntity.ok(new JsonResponse(200, "Success refresh token", token));
+    }
+
+
+    @DeleteMapping("/v1/members/delete-account")
+    public ResponseEntity<Object> deleteAccount(HttpServletRequest servletRequest){
+        log.info("[API] deleteAccount");
+        Member member = memberAuthService.getMemberByHeader(servletRequest);
+        memberAuthService.deleteAccount(member);
+        return ResponseEntity.ok(new JsonResponse(204, "Success deleteAccount", null));
     }
 }

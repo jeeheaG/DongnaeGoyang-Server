@@ -6,6 +6,8 @@ import com.example.dongnaegoyangserver2022.domain.post.dto.PostResponse;
 import com.example.dongnaegoyangserver2022.global.common.BaseTimeEntity;
 import com.example.dongnaegoyangserver2022.global.common.ModelMapperUtil;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -28,10 +30,12 @@ public class Post extends BaseTimeEntity {
 
     @JoinColumn(name = "cat_idx", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Cat cat;
 
     @JoinColumn(name = "member_idx", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
     //-- method to DTO --//

@@ -56,14 +56,18 @@ public class MemberAuthService {
         return memberOptional.get();
     }
 
-    public String checkTokenInfo(HttpServletRequest ServletRequest){
-        Long kakaoId = jwtTokenProvider.getUserPKByServlet(ServletRequest);
+    public void deleteAccount(Member member){
+        memberRepository.delete(member);
+    }
+
+    public String checkTokenInfo(HttpServletRequest servletRequest){
+        Long kakaoId = jwtTokenProvider.getUserPKByServlet(servletRequest);
         if(kakaoId == null){
             log.info("[REJECT] checkTokenInfo");
             throw new RestApiException(MemberErrorCode.GUEST_USER);
         }
 
-        boolean valid = jwtTokenProvider.validateTokenByServlet(ServletRequest);
+        boolean valid = jwtTokenProvider.validateTokenByServlet(servletRequest);
 
         return "kakaoId : "+kakaoId+" / valid : "+valid;
     }

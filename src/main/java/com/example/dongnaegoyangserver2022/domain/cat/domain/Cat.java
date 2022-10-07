@@ -6,6 +6,8 @@ import com.example.dongnaegoyangserver2022.domain.member.domain.Member;
 import com.example.dongnaegoyangserver2022.global.common.BaseTimeEntity;
 import com.example.dongnaegoyangserver2022.global.common.ModelMapperUtil;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.modelmapper.ModelMapper;
 
 import javax.persistence.*;
@@ -74,6 +76,7 @@ public class Cat extends BaseTimeEntity {
 
     @JoinColumn(name = "member_idx", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
     //-- 연관관계 설정 메서드 --//

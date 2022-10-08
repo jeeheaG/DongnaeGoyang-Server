@@ -20,13 +20,15 @@ public class MemberRequest {
     @AllArgsConstructor
     @Data
     public static class SignUpRequest {
-        private String si;
-        private String gu;
-        private String dong;
+        private String sido;
+        private String gugun;
+        private String loginType;
+
+//        private String si;
+//        private String gu;
+//        private String dong;
 
 //TODO : 추후 수정 필요
-//        private String sido;
-//        private String gugun;
     }
 
     @NoArgsConstructor

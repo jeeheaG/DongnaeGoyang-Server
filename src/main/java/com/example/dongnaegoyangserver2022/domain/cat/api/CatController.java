@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+@RequiredArgsConstructor
 @Slf4j
 @RestController
-@RequiredArgsConstructor
 public class CatController {
 
     private final JwtTokenProvider jwtTokenProvider;

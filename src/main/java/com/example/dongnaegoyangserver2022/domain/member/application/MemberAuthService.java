@@ -158,7 +158,7 @@ public class MemberAuthService {
                 .email(email)
                 .sido(si)
                 .gugun(gu+" "+dong) //TODO : 추후 수정 필요
-                .login_type("kakao")
+                .loginType("kakao")
                 .roles(Collections.singletonList("ROLE_USER")) //회원가입 시 role을 USER로 설정 //TODO : ?흠 이게 DB에 저장되네..
                 .build();
 

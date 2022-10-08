@@ -40,13 +40,15 @@ public class Member implements UserDetails { //NotNull인 게 하나도 없음..
     private String gugun;
 
     @Column(length = 100, nullable = false)
-    private String login_type;
+    private String loginType;
 
     @Column(nullable = false, unique = true)
     private Long kakaoId; //카카오 회원번호(고유값)
 
     //-- to response dto 메서드--//
-
+    public MemberResponse.MemberMyInfoResponse toMemberMyInfoResopnse() {
+        return ModelMapperUtil.getModelMapper().map(this, MemberResponse.MemberMyInfoResponse.class);
+    }
     public MemberResponse.MemberSimpleResponse toMemberSimpleResponse() {
         return ModelMapperUtil.getModelMapper().map(this, MemberResponse.MemberSimpleResponse.class);
     }

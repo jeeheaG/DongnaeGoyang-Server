@@ -28,8 +28,6 @@ public class CatResponse {
         private Long catIdx;
         private String name;
         private CatAppearance appearance;
-
-
     }
 
     @Builder
@@ -106,6 +104,14 @@ public class CatResponse {
         private int color;
         private int tail;
         private int whisker;
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    public static class SimpleCatResponse {
+        private Long catIdx;
+        private String name;
     }
 
 }

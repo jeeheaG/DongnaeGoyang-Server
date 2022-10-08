@@ -136,29 +136,38 @@ public class MemberAuthService {
 //            throw new RuntimeException("Already exist member by this kakao id.");
 //        }
 
+        //카카오로부터 받아온 정보
         String nickname = resultMap.get("nickname").toString();
         String email = resultMap.get("email").toString();
 
-        String si = request.getSi();
-        String gu = request.getGu();
-        String dong = request.getDong();
-        if(si == null){
-            si = "";
-        }
-        if(gu == null){
-            gu = "";
-        }
-        if(dong == null){
-            dong = "";
-        }
+        //request body로 받아온 정보
+        String sido = request.getSido();
+        String gugun = request.getGugun();
+        String loginType = request.getLoginType();
+
+//        String si = request.getSi();
+//        String gu = request.getGu();
+//        String dong = request.getDong();
+//        if(si == null){
+//            si = "";
+//        }
+//        if(gu == null){
+//            gu = "";
+//        }
+//        if(dong == null){
+//            dong = "";
+//        }
 
         Member newMember = Member.builder()
                 .kakaoId(kakaoId)
                 .nickname(nickname)
                 .email(email)
-                .sido(si)
-                .gugun(gu+" "+dong) //TODO : 추후 수정 필요
-                .login_type("kakao")
+                .sido(sido)
+                .gugun(gugun)
+                .loginType(loginType)
+//                .sido(sido)
+//                .gugun(gu+" "+dong) //TODO : 추후 수정 필요
+//                .loginType("kakao")
                 .roles(Collections.singletonList("ROLE_USER")) //회원가입 시 role을 USER로 설정 //TODO : ?흠 이게 DB에 저장되네..
                 .build();
 

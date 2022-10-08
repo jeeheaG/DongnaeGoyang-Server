@@ -46,6 +46,18 @@ public class CatService {
         return cat;
     }
 
+    public List<CatResponse.SimpleCatResponse> getSimpleCatListByMember(Member member, Pageable pageable){
+        log.info("[SERVICE] getSimpleCatListByMember");
+        Page<Cat> catPage = catRepository.findByMember(pageable, member);
+
+        List<Cat> catList = catPage.getContent();
+        List<CatResponse.SimpleCatResponse> catResponseList = catList.stream().map(cat ->
+                cat.toSimpleCatResponse())
+                .collect(Collectors.toList());
+
+        return catResponseList;
+    }
+
     public Long addCat(Member member, CreateCatModel model){
         log.info("[SERVICE] addCat");
 //        log.info("[addCat] model: "+model); //잘 됨

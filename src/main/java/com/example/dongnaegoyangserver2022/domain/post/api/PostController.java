@@ -45,6 +45,7 @@ public class PostController {
                                               @PathVariable Long catIdx,
                                               @RequestParam int page){
         log.info("[API] getPostList");
+        catService.getCatByIdx(catIdx); //없는 고양이이면 exception 발생
         Long kakaoId = jwtTokenProvider.getUserPKByServlet(servletRequest);
         PageRequest pageRequest = PageRequest.of(page, 30);
         PostResponse.GetPostListResponseContainer container = postService.getPostList(kakaoId, catIdx, pageRequest);

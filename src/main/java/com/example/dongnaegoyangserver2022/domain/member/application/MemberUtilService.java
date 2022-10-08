@@ -15,6 +15,10 @@ public class MemberUtilService {
 
     private final MemberRepository memberRepository;
 
+    public MemberResponse.MemberMyInfoResponse getMyInfo(Member member){
+        return member.toMemberMyInfoResopnse();
+    }
+
     public MemberResponse.MemberTownResponse updateTown(Member member, MemberServiceModel.MemberUpdateTownModel model){
         member.updateMemberTown(model.getSido(), model.getGugun());
         Member updatedMember = memberRepository.save(member);

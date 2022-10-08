@@ -95,24 +95,9 @@ public class Cat extends BaseTimeEntity {
 
 
     //-- response DTO 변환 메서드 --//
-//    public static CatResponse.CatListResponseContainer toCatListResponseContainer(List<Cat> catList) {
-//        ArrayList<CatResponse.CatListResponse> catListResponses = new ArrayList<>();
-//        for(Cat cat : catList) {
-//            catListResponses.add(cat.toCatListResponse());
-//        }
-//        return CatResponse.CatListResponseContainer.builder()
-//                .catList(catListResponses)
-//                .build();
-//    }
-
-//    public List<CatResponse.OtherCatResponse> toOtherCatResponse(List<Cat> catList) {
-//        ArrayList<CatResponse.OtherCatResponse> otherCatResponses = new ArrayList<>();
-//        for(Cat cat : catList) {
-//            otherCatResponses.add(ModelMapperUtil.getModelMapper().map(cat, CatResponse.OtherCatResponse.class));
-//        }
-//        return otherCatResponses;
-//    }
-
+    public CatResponse.SimpleCatResponse toSimpleCatResponse(){
+        return ModelMapperUtil.getModelMapper().map(this, CatResponse.SimpleCatResponse.class);
+    }
 
     public CatResponse.CatListResponse toCatListResponse() {
         return CatResponse.CatListResponse.builder()

@@ -21,6 +21,7 @@ public class NoticeController {
 
     @GetMapping("/v1/notices")
     public ResponseEntity<Object> getNoticeList(@RequestParam int page){
+        log.info("[API] getNoticeList");
         Sort sort = Sort.by("modifiedTime").descending();
         PageRequest pageRequest = PageRequest.of(page, 30, sort);
         NoticeResponse.GetNoticeListResponseContainer noticeResponseContainer = noticeService.getNoticeList(pageRequest);

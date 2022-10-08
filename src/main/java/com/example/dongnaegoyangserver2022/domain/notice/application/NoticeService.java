@@ -21,6 +21,7 @@ public class NoticeService {
     private final NoticeRepository noticeRepository;
 
     public NoticeResponse.GetNoticeListResponseContainer getNoticeList(Pageable pageable){
+        log.info("[SERVICE] getNoticeList");
         Page<Notice> noticePage = noticeRepository.findAll(pageable); //OrderByCreatedTimeDesc
 
         List<Notice> noticeList = noticePage.getContent();

@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.modelmapper.TypeMap;
 
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
 
 public class PostRequest {
 

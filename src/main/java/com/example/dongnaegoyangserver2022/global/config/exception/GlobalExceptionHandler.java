@@ -66,10 +66,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         HttpStatus httpStatus = errorCode.getHttpStatus();
         List<ObjectError> errorList = ex.getBindingResult().getAllErrors();
 
+        //에러 메세지 생성
         StringBuilder builder = new StringBuilder();
         errorList.forEach(error -> {
-            String field = ( (FieldError) error).getField();
-            String msg = error.getDefaultMessage();
+            String field = ( (FieldError) error).getField(); //필드명 가져오기
+            String msg = error.getDefaultMessage(); //기본 에러메세지 가져오기
             builder.append(field).append(" : ").append(msg).append(". ");
         });
         String message = builder.toString();

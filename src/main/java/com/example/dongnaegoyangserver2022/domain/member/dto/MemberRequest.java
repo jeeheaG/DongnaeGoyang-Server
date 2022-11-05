@@ -16,6 +16,7 @@ public class MemberRequest {
     @AllArgsConstructor
     @Data
     public static class LoginRequest {
+        @NotBlank
         private String loginType;
     }
 
@@ -23,8 +24,14 @@ public class MemberRequest {
     @AllArgsConstructor
     @Data
     public static class SignUpRequest {
+
+        @NotBlank
         private String sido;
+
+        @NotBlank
         private String gugun;
+
+        @NotBlank
         private String loginType;
     }
 
@@ -32,7 +39,11 @@ public class MemberRequest {
     @AllArgsConstructor
     @Data
     public static class UpdateMemberTownRequest {
+
+        @NotBlank
         private String sido;
+
+        @NotBlank
         private String gugun;
 
         public MemberServiceModel.MemberUpdateTownModel toServiceModel(){
@@ -45,7 +56,7 @@ public class MemberRequest {
     @Data
     public static class UpdateMemberNicknameRequest {
 
-        @NotBlank//(message = "nickname field cannot be blank") //Validation
+        @NotBlank //Validation
         private String nickname;
 
         public MemberServiceModel.MemberUpdateNicknameModel toServiceModel(){

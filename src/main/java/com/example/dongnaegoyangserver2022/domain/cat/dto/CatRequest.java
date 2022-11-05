@@ -45,10 +45,8 @@ public class CatRequest {
 
         @NotBlank
         private String oftenSeen;
-
         @NotBlank
         private String sex;
-
         @NotBlank
         private String age;
         @NotBlank

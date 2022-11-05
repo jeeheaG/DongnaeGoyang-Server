@@ -58,7 +58,7 @@ public class MemberUtilController {
 
     @PatchMapping("/v1/members/town")
     public ResponseEntity<Object> updateTown(HttpServletRequest servletRequest,
-                                             @RequestBody MemberRequest.UpdateMemberTownRequest request){
+                                             @Valid @RequestBody MemberRequest.UpdateMemberTownRequest request){
         log.info("[API] updateTown");
         Member member = memberAuthService.getMemberByHeader(servletRequest);
         MemberResponse.MemberTownResponse memberTownResponse = memberUtilService.updateTown(member, request.toServiceModel());

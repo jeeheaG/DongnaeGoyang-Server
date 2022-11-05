@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,7 +29,7 @@ public class MemberAuthController {
 
 
     @PostMapping("/v1/members/login")
-    public ResponseEntity<Object> login(@RequestBody MemberRequest.LoginRequest request,
+    public ResponseEntity<Object> login(@Valid @RequestBody MemberRequest.LoginRequest request,
                                         HttpServletRequest httpServletRequest) { //@RequestHeader("AUTH") String header 로 바로 가져올 수도 있음
         log.info("[API] login");
         MemberResponse.LoginResponse loginResponse = memberAuthService.login(httpServletRequest, request);
@@ -36,7 +37,7 @@ public class MemberAuthController {
     }
 
     @PostMapping("/v1/members/signUp")
-    public ResponseEntity<Object> addMember(@RequestBody MemberRequest.SignUpRequest request,
+    public ResponseEntity<Object> addMember(@Valid @RequestBody MemberRequest.SignUpRequest request,
                                             HttpServletRequest httpServletRequest ) {
         log.info("[API] addMember");
         Long memberIdx = memberAuthService.addMember(httpServletRequest, request);

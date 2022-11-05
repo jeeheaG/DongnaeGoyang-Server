@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.modelmapper.TypeMap;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 public class PostRequest {
@@ -15,6 +16,8 @@ public class PostRequest {
     @AllArgsConstructor
     @Data
     public static class CreatePostRequest{
+
+        @NotBlank
         private String content;
 
         public PostServiceModel.CreatePostModel toServiceModel(){

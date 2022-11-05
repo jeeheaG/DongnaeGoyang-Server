@@ -5,8 +5,10 @@ import com.example.dongnaegoyangserver2022.global.common.ModelMapperUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.data.domain.PageRequest;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 public class CatRequest {
@@ -17,21 +19,44 @@ public class CatRequest {
     @Data //Equivalent to @Getter @Setter @RequiredArgsConstructor @ToString @EqualsAndHashCode
     public static class CreateCatRequest {
 
-//        @Autowired
-//        private ModelMapper modelMapper;
-
+        @NotBlank
         private String name;
+
+        @NotBlank
+        @Range(min=1, max=7)
         private int color;
+
+        @NotBlank
+        @Range(min=1, max=3)
         private int size;
+
+        @NotBlank
+        @Range(min=1, max=3)
         private int ear;
+
+        @NotBlank
+        @Range(min=1, max=2)
         private int tail;
+
+        @NotBlank
+        @Range(min=1, max=2)
         private int whisker;
+
+        @NotBlank
         private String oftenSeen;
+
+        @NotBlank
         private String sex;
+
+        @NotBlank
         private String age;
+        @NotBlank
         private String note;
+        @NotBlank
         private String sido;
+        @NotBlank
         private String gugun;
+
         private String tnr = null;
         private String feed = null;
         private List<String> photoList = null;
@@ -77,7 +102,11 @@ public class CatRequest {
     @AllArgsConstructor
     @Data
     public static class GetCatListRequest {
+
+        @NotBlank
         private String sido;
+
+        @NotBlank
         private String gugun;
 
         public CatServiceModel.GetCatListModel toCatServiceModel(PageRequest pageRequest) {

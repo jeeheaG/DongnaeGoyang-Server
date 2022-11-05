@@ -55,7 +55,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(e.getHttpStatus(), e.getMessage());
     }
 
-
     //@Valid 어노테이션으로 발생하는 에러 처리
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(

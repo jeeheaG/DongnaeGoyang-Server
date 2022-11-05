@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -28,7 +29,7 @@ public class CatController {
 
     @PostMapping("/v1/cats")
     public ResponseEntity<Object> createCat(HttpServletRequest servletRequest,
-                                            @RequestBody CatRequest.CreateCatRequest request) {
+                                            @Valid @RequestBody CatRequest.CreateCatRequest request) {
         log.info("[API] createCat");
         Member member = memberAuthService.getMemberByHeader(servletRequest);
         Long catIdx = catService.addCat(member, request.toCatServiceModel());
@@ -36,8 +37,8 @@ public class CatController {
     }
 
     @GetMapping("/v1/cats")
-    public ResponseEntity<Object> getCatList(@RequestBody CatRequest.GetCatListRequest request,
-                                             @RequestParam int page) { //TODO : member필요없음. body에서 주소 가져오도록 수정할 것
+    public ResponseEntity<Object> getCatList(@Valid @RequestBody CatRequest.GetCatListRequest request,
+                                             @RequestParam int page) {
         log.info("[API] getCatList");
         PageRequest pageRequest = PageRequest.of(page, 20); // Pageable : page와 size
         CatServiceModel.GetCatListModel model = request.toCatServiceModel(pageRequest);
@@ -71,7 +72,7 @@ public class CatController {
     @PatchMapping("/v1/cats/{catIdx}")
     public ResponseEntity<Object> updateCat(HttpServletRequest servletRequest,
                                             @PathVariable Long catIdx,
-                                            @RequestBody CatRequest.UpdateCatRequest request) {
+                                            @Valid @RequestBody CatRequest.UpdateCatRequest request) {
         log.info("[API] updateCat");
         Member member = memberAuthService.getMemberByHeader(servletRequest);
         Long updatedCatIdx = catService.updateCat(member, catIdx, request.toCatServiceModel());

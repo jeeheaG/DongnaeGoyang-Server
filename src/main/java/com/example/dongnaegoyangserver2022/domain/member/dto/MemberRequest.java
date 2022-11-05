@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class MemberRequest {
 
 
@@ -23,12 +26,6 @@ public class MemberRequest {
         private String sido;
         private String gugun;
         private String loginType;
-
-//        private String si;
-//        private String gu;
-//        private String dong;
-
-//TODO : 추후 수정 필요
     }
 
     @NoArgsConstructor
@@ -47,6 +44,8 @@ public class MemberRequest {
     @AllArgsConstructor
     @Data
     public static class UpdateMemberNicknameRequest {
+
+        @NotBlank//(message = "nickname field cannot be blank") //Validation
         private String nickname;
 
         public MemberServiceModel.MemberUpdateNicknameModel toServiceModel(){

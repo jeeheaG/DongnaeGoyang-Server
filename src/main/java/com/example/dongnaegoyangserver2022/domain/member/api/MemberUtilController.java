@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
@@ -66,7 +67,7 @@ public class MemberUtilController {
 
     @PatchMapping("/v1/members/nickname")
     public ResponseEntity<Object> updateNickname(HttpServletRequest servletRequest,
-                                             @RequestBody MemberRequest.UpdateMemberNicknameRequest request){
+                                             @Valid @RequestBody MemberRequest.UpdateMemberNicknameRequest request){
         log.info("[API] updateNickname");
         Member member = memberAuthService.getMemberByHeader(servletRequest);
         MemberResponse.MemberNicknameResponse memberNicknameResponse = memberUtilService.updateNickname(member, request.toServiceModel());

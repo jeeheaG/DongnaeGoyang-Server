@@ -2,14 +2,26 @@ package com.example.dongnaegoyangserver2022.global.config.exception;
 
 import com.example.dongnaegoyangserver2022.global.config.exception.error.CommonErrorCode;
 import com.example.dongnaegoyangserver2022.global.config.exception.error.ErrorCode;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-//@Slf4j
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@Slf4j
 @RestControllerAdvice //전역적으로 에러를 처리해주는 어노테이션
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     /* Spring은 스프링 예외를 미리 처리해둔 ResponseEntityExceptionHandler를 추상 클래스로 제공하고 있다.
@@ -31,12 +43,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(errorCode, e.getMessage());
     }
 
-    //TODO : 이게 될까? 안될듯 url 404도 안됐음..
-    @ExceptionHandler(HttpClientErrorException.BadRequest.class)
-    public ResponseEntity<Object> handleBadRequest(HttpClientErrorException.BadRequest e){
-        ErrorCode errorCode = CommonErrorCode.INTERNAL_SERVER_ERROR;
-        return handleExceptionInternal(errorCode, e.getMessage());
-    }
+//    //TODO : 이게 될까? 안될듯 url 404도 안됐음..
+//    @ExceptionHandler(HttpClientErrorException.BadRequest.class)
+//    public ResponseEntity<Object> handleBadRequest(HttpClientErrorException.BadRequest e){
+//        ErrorCode errorCode = CommonErrorCode.INTERNAL_SERVER_ERROR;
+//        return handleExceptionInternal(errorCode, e.getMessage());
+//    }
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<Object> handleCustomException(CustomException e){
@@ -44,6 +56,30 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 
+    //@Valid 어노테이션으로 발생하는 에러 처리
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+//        log.info("JH handleBindException");
+
+        ErrorCode errorCode = CommonErrorCode.INVALID_PARAMETER;
+        HttpStatus httpStatus = errorCode.getHttpStatus();
+        List<ObjectError> errorList = ex.getBindingResult().getAllErrors();
+
+        StringBuilder builder = new StringBuilder();
+        errorList.forEach(error -> {
+            String field = ( (FieldError) error).getField();
+            String msg = error.getDefaultMessage();
+            builder.append(field).append(" : ").append(msg).append(". ");
+        });
+        String message = builder.toString();
+        builder.setLength(0);
+
+        return handleExceptionInternal(httpStatus, message);
+    }
+
+
+    ///////////-- 메서드들 --//////////////
     public ResponseEntity<Object> handleExceptionInternal(ErrorCode errorCode){
         ErrorResponse errorResponse = ErrorResponse.builder() //body로 갈 내용 만듦
                 .status(errorCode.getHttpStatus().value()) //httpStatusCode 가져옴

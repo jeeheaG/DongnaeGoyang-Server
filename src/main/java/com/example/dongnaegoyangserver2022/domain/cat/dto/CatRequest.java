@@ -9,6 +9,8 @@ import org.hibernate.validator.constraints.Range;
 import org.springframework.data.domain.PageRequest;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class CatRequest {
@@ -22,25 +24,25 @@ public class CatRequest {
         @NotBlank
         private String name;
 
-        @NotBlank
-        @Range(min=1, max=7)
-        private int color;
+        @NotNull
+        @Range(min=0, max=6)
+        private Integer color;
 
-        @NotBlank
-        @Range(min=1, max=3)
-        private int size;
+        @NotNull
+        @Range(min=0, max=2)
+        private Integer size;
 
-        @NotBlank
-        @Range(min=1, max=3)
-        private int ear;
+        @NotNull
+        @Range(min=0, max=2)
+        private Integer ear;
 
-        @NotBlank
-        @Range(min=1, max=2)
-        private int tail;
+        @NotNull
+        @Range(min=0, max=1)
+        private Integer tail;
 
-        @NotBlank
-        @Range(min=1, max=2)
-        private int whisker;
+        @NotNull
+        @Range(min=0, max=1)
+        private Integer whisker;
 
         @NotBlank
         private String oftenSeen;

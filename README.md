@@ -14,6 +14,7 @@
     - JPA, JPA Auditing
     - JWT
     - Hibernate Bean Validator
+    - Slf4j 로깅
     - Pageable
     - ModelMapper
     - Lombok

@@ -119,7 +119,7 @@ public class Cat extends BaseTimeEntity {
             catDetailResponse.setIsWriter(this.member.getKakaoId().equals(kakaoId));
         }
 
-        catDetailResponse.setPlace(this.sido + " " + this.gugun);
+//        catDetailResponse.setPlace(this.sido + " " + this.gugun);
         catDetailResponse.setAppearance(toCatAppearance());
         catDetailResponse.setPhotoList(imageList.stream().map(image -> image.toStringSimpleResponse()).collect(Collectors.toList()));
         catDetailResponse.setWriter(this.member.toMemberSimpleResponse());

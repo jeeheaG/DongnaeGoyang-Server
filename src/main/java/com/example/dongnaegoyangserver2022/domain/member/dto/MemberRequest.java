@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+
 public class MemberRequest {
 
 
@@ -13,6 +15,7 @@ public class MemberRequest {
     @AllArgsConstructor
     @Data
     public static class LoginRequest {
+        @NotBlank
         private String loginType;
     }
 
@@ -20,22 +23,26 @@ public class MemberRequest {
     @AllArgsConstructor
     @Data
     public static class SignUpRequest {
+
+        @NotBlank
         private String sido;
+
+        @NotBlank
         private String gugun;
+
+        @NotBlank
         private String loginType;
-
-//        private String si;
-//        private String gu;
-//        private String dong;
-
-//TODO : 추후 수정 필요
     }
 
     @NoArgsConstructor
     @AllArgsConstructor
     @Data
     public static class UpdateMemberTownRequest {
+
+        @NotBlank
         private String sido;
+
+        @NotBlank
         private String gugun;
 
         public MemberServiceModel.MemberUpdateTownModel toServiceModel(){
@@ -47,6 +54,8 @@ public class MemberRequest {
     @AllArgsConstructor
     @Data
     public static class UpdateMemberNicknameRequest {
+
+        @NotBlank //Validation
         private String nickname;
 
         public MemberServiceModel.MemberUpdateNicknameModel toServiceModel(){

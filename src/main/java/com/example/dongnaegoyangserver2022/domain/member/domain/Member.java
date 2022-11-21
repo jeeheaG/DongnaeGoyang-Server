@@ -72,7 +72,7 @@ public class Member implements UserDetails { //NotNull인 게 하나도 없음..
     }
     ////////////////////////////// implements UserDetails //////////////////////////////
 
-    //TODO : ??? roles가 그래서 어디서 오는 거임??
+    //??? roles가 그래서 어디서 오는 거임?? - DB에 테이블로 저장되더라..?
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();

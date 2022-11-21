@@ -145,19 +145,6 @@ public class MemberAuthService {
         String gugun = request.getGugun();
         String loginType = request.getLoginType();
 
-//        String si = request.getSi();
-//        String gu = request.getGu();
-//        String dong = request.getDong();
-//        if(si == null){
-//            si = "";
-//        }
-//        if(gu == null){
-//            gu = "";
-//        }
-//        if(dong == null){
-//            dong = "";
-//        }
-
         Member newMember = Member.builder()
                 .kakaoId(kakaoId)
                 .nickname(nickname)
@@ -165,9 +152,6 @@ public class MemberAuthService {
                 .sido(sido)
                 .gugun(gugun)
                 .loginType(loginType)
-//                .sido(sido)
-//                .gugun(gu+" "+dong) //TODO : 추후 수정 필요
-//                .loginType("kakao")
                 .roles(Collections.singletonList("ROLE_USER")) //회원가입 시 role을 USER로 설정 //TODO : ?흠 이게 DB에 저장되네..
                 .build();
 

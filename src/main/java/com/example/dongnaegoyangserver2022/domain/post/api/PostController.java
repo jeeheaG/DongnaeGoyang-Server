@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class PostController {
 
     @PostMapping("/v1/cats/{catIdx}/posts")
     public ResponseEntity<Object> createPost(HttpServletRequest servletRequest,
-                                             @RequestBody PostRequest.CreatePostRequest request,
+                                             @Valid @RequestBody PostRequest.CreatePostRequest request,
                                              @PathVariable Long catIdx){
         log.info("[API] createPost");
         Long postIdx = postService.addPost(

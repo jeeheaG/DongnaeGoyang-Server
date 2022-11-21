@@ -5,8 +5,11 @@ import com.example.dongnaegoyangserver2022.global.common.ModelMapperUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.data.domain.PageRequest;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class CatRequest {
@@ -17,21 +20,42 @@ public class CatRequest {
     @Data //Equivalent to @Getter @Setter @RequiredArgsConstructor @ToString @EqualsAndHashCode
     public static class CreateCatRequest {
 
-//        @Autowired
-//        private ModelMapper modelMapper;
-
+        @NotBlank
         private String name;
-        private int color;
-        private int size;
-        private int ear;
-        private int tail;
-        private int whisker;
+
+        @NotNull
+        @Range(min=0, max=6)
+        private Integer color;
+
+        @NotNull
+        @Range(min=0, max=2)
+        private Integer size;
+
+        @NotNull
+        @Range(min=0, max=2)
+        private Integer ear;
+
+        @NotNull
+        @Range(min=0, max=1)
+        private Integer tail;
+
+        @NotNull
+        @Range(min=0, max=1)
+        private Integer whisker;
+
+        @NotBlank
         private String oftenSeen;
+        @NotBlank
         private String sex;
+        @NotBlank
         private String age;
+        @NotBlank
         private String note;
+        @NotBlank
         private String sido;
+        @NotBlank
         private String gugun;
+
         private String tnr = null;
         private String feed = null;
         private List<String> photoList = null;
@@ -77,7 +101,11 @@ public class CatRequest {
     @AllArgsConstructor
     @Data
     public static class GetCatListRequest {
+
+        @NotBlank
         private String sido;
+
+        @NotBlank
         private String gugun;
 
         public CatServiceModel.GetCatListModel toCatServiceModel(PageRequest pageRequest) {

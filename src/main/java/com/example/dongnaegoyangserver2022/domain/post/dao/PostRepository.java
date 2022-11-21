@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    @Query(value = "select p from Post p where p.cat.catIdx = :catIdx")
+    @Query(value = "select p from Post p where p.cat.catIdx = :catIdx order by p.createdTime desc")
     Page<Post> findByCatIdxPageable(Pageable pageable, @Param("catIdx") Long catIdx);
 
 }

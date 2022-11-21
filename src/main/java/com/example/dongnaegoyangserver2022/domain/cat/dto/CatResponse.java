@@ -51,7 +51,9 @@ public class CatResponse {
         private String name;
         private String sex;
         private String age;
-        private String place;
+//        private String place;
+        private String sido;
+        private String gugun;
         private String oftenSeen;
         private String note;
         private CatAppearance appearance;

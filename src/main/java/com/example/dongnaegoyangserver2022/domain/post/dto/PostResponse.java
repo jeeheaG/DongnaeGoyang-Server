@@ -27,7 +27,8 @@ public class PostResponse {
     @Data
     public static class GetPostListResponse{
         private Long postIdx;
-        private ZonedDateTime createdTime;
+//        private ZonedDateTime createdTime;
+        private String createdTime;
         private MemberResponse.MemberSimpleResponse writer;
         private Boolean isWriter;
         private String content;

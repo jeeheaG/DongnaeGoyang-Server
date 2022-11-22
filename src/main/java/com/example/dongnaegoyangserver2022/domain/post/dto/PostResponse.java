@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public class PostResponse {
@@ -26,7 +27,7 @@ public class PostResponse {
     @Data
     public static class GetPostListResponse{
         private Long postIdx;
-        private LocalDateTime createdTime;
+        private ZonedDateTime createdTime;
         private MemberResponse.MemberSimpleResponse writer;
         private Boolean isWriter;
         private String content;

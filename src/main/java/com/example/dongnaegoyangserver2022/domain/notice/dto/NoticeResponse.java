@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public class NoticeResponse {
@@ -25,6 +26,6 @@ public class NoticeResponse {
         private Long noticeIdx;
         private String title;
         private String content;
-        private LocalDateTime modifiedTime;
+        private ZonedDateTime modifiedTime;
     }
 }

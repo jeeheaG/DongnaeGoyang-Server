@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public class CatResponse {
@@ -61,7 +61,7 @@ public class CatResponse {
         private int healthInfoCount;
         private String tnr = null;
         private String feed = null;
-        private LocalDateTime modifiedTime;
+        private ZonedDateTime modifiedTime;
         private MemberResponse.MemberSimpleResponse writer;
         private List<OtherCatResponse> otherCatList;
     }
@@ -90,7 +90,7 @@ public class CatResponse {
         private int healthInfoCount;
         private String tnr = null;
         private String feed = null;
-        private LocalDateTime modifiedTime;
+        private ZonedDateTime modifiedTime;
         private MemberResponse.MemberSimpleResponse writer;
         private List<OtherCatResponse> otherCatList;
     }

@@ -13,18 +13,20 @@
     - 도메인 모델 패턴
     - JPA, JPA Auditing
     - JWT
-    - Hibernate Bean Validator
-    - Slf4j 로깅
-    - Pageable
     - ModelMapper
     - Lombok
+    - Hibernate Bean Validator
+<!--
     - 도메인형 패키징
+    - Slf4j 로깅
+    - Pageable
     - Service에서 사용하는 model 정의
+-->
 
 * 팀원 소개😀
     + 김지민 : 팀장, Android
     + 이민영 : Android
-    + 박지혜 : BE, Android 일부 (소셜로그인)
+    + 박지혜 : BE 전체 개발, Android 일부(OAuth)
 
 * 프로젝트 소개📝
 

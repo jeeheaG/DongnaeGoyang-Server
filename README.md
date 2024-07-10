@@ -10,17 +10,24 @@
     <img src="https://img.shields.io/badge/Amazon RDS-FF9900?style=flat-square&logo=Amazon RDS&logoColor=white">
 
     그 외 
-    - 도메인 모델 패턴
-    - JPA, JPA Auditing
+    - 도메인 모델 패턴  
+          `행동` Service에 단순 나열되어있던 비즈니스 로직을 관련 Entity로 이동  
+          `결과` Service는 순서보장의 역할로 핵심적인 로직의 흐름만 남아 가독성 증가, 유지보수 용이 
+    - 작은 코드 상의 작업들 자동화 시도
+        - JPA Auditing을 사용해 Entity 생성, 수정 시각 업데이트 자동화
+        - ModelMapper를 사용해 entity와 model, dto 간 잦은 필드 맵핑 작업 줄임
+    - Kakao OAuth 로그인 구현
+    - Swagger
+    - JPA
     - JWT
-    - ModelMapper
-    - Lombok
     - Hibernate Bean Validator
 <!--
     - 도메인형 패키징
     - Slf4j 로깅
     - Pageable
     - Service에서 사용하는 model 정의
+    - ModelMapper
+    - Lombok
 -->
 
 * 팀원 소개😀
